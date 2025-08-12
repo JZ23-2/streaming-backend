@@ -18,7 +18,7 @@ func SetUpRoutes() {
 
 	api := r.Group("/api/v1")
 	{
-		StreamRoutes(api)
+		ChatRoutes(api)
 	}
 
 	r.Run(":8080")

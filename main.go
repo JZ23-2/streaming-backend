@@ -1,7 +1,13 @@
 package main
 
-import "main/routes"
+import (
+	"main/config"
+	"main/database"
+	"main/routes"
+)
 
 func main() {
+	config.Loadenv()
+	database.ConnectDB()
 	routes.SetUpRoutes()
 }
