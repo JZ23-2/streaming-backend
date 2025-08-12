@@ -1,0 +1,70 @@
+basePath: /api/v1
+definitions:
+  models.Message:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      messageID:
+        type: string
+      streamID:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userMessageID:
+        type: string
+    type: object
+  models.User:
+    properties:
+      createdAt:
+        type: string
+      userID:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact:
+    email: Jacksontpa7@gmail.com
+    name: Jackson API Support
+  description: API documentation for the streaming live chat backend.
+  license:
+    name: MIT
+  title: Streaming Backend API
+  version: "1.0"
+paths:
+  /messages/{stream_id}:
+    get:
+      description: Retrieve all chat messages by Stream ID
+      parameters:
+      - description: Stream ID
+        in: path
+        name: stream_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Message'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all messages for a stream
+      tags:
+      - messages
+swagger: "2.0"

@@ -3,6 +3,9 @@ package routes
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetUpRoutes() {
@@ -15,10 +18,12 @@ func SetUpRoutes() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := r.Group("/api/v1")
 	{
 		ChatRoutes(api)
+		MessageRoutes(api)
 	}
 
 	r.Run(":8080")
