@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/mitchellh/mapstructure"
 )
 
 var upgrader = websocket.Upgrader{
@@ -38,17 +39,27 @@ func HandleWebSocket(c *gin.Context) {
 	chatRooms[streamID][conn] = true
 
 	for {
-		var msg dtos.ChatMessage
-		err := conn.ReadJSON(&msg)
+		var incoming dtos.SocketMessage
+		err := conn.ReadJSON(&incoming)
 		if err != nil {
 			log.Println("Read error: ", err)
 			delete(chatRooms[streamID], conn)
 			break
 		}
 
-		msg.StreamID = streamID
-		broadcast <- msg
+		switch incoming.Type {
+		case "chat_message":
+			var chatMsg dtos.ChatMessage
+
+			if err := mapstructure.Decode(incoming.Data, &chatMsg); err != nil {
+				log.Println("Decode error: ", err)
+				continue
+			}
+			chatMsg.StreamID = streamID
+			broadcast <- chatMsg
+		}
 	}
+
 }
 
 func handleMessages() {
@@ -60,7 +71,10 @@ func handleMessages() {
 		}
 
 		for conn := range chatRooms[msg.StreamID] {
-			err := conn.WriteJSON(msg)
+			err := conn.WriteJSON(map[string]interface{}{
+				"type": "chat_message",
+				"data": msg,
+			})
 			if err != nil {
 				log.Println("Write error: ", err)
 				conn.Close()
