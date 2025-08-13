@@ -2,18 +2,14 @@ package controllers
 
 import (
 	"log"
+	"main/config"
 	"main/dtos"
 	"main/services"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/mitchellh/mapstructure"
 )
-
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool { return true },
-}
 
 var chatRooms = make(map[string]map[*websocket.Conn]bool)
 var broadcast = make(chan dtos.ChatMessage)
@@ -24,7 +20,7 @@ func init() {
 
 func HandleWebSocket(c *gin.Context) {
 	streamID := c.Param("streamID")
-	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	conn, err := config.Upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Println("Upgrade error: ", err)
 		return
@@ -49,17 +45,21 @@ func HandleWebSocket(c *gin.Context) {
 
 		switch incoming.Type {
 		case "chat_message":
-			var chatMsg dtos.ChatMessage
-
-			if err := mapstructure.Decode(incoming.Data, &chatMsg); err != nil {
-				log.Println("Decode error: ", err)
-				continue
-			}
-			chatMsg.StreamID = streamID
-			broadcast <- chatMsg
+			handleChatMessage(streamID, incoming.Data)
 		}
-	}
 
+	}
+}
+
+func handleChatMessage(streamID string, data interface{}) {
+	var chatMsg dtos.ChatMessage
+
+	if err := mapstructure.Decode(data, &chatMsg); err != nil {
+		log.Println("Decode error: ", err)
+		return
+	}
+	chatMsg.StreamID = streamID
+	broadcast <- chatMsg
 }
 
 func handleMessages() {
