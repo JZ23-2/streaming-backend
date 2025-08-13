@@ -1,7 +1,7 @@
 package dtos
 
 type ChatMessage struct {
-	StreamID string `json:"stream_id"`
-	UserID   string `json:"user_id"`
+	StreamID string `json:"streamId"`
+	UserID   string `json:"userId"`
 	Content  string `json:"content"`
 }
