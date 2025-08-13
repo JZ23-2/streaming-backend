@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 
@@ -25,5 +26,5 @@ func SetUpRoutes() {
 		MessageRoutes(api)
 	}
 
-	r.Run(":8080")
+	r.Run(":6969")
 }

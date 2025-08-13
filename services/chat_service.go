@@ -9,11 +9,11 @@ import (
 
 func SaveMessage(streamID, userID, content string) error {
 	message := models.Message{
-		MessageID:     helper.GenerateID(),
-		StreamID:      streamID,
-		UserMessageID: userID,
-		Content:       content,
-		CreatedAt:     time.Now(),
+		MessageID:          helper.GenerateID(),
+		StreamID:           streamID,
+		MessagePrincipalID: userID,
+		Content:            content,
+		CreatedAt:          time.Now(),
 	}
 
 	return database.DB.Create(&message).Error
