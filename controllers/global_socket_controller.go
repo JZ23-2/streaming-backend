@@ -1,13 +1,14 @@
 package controllers
 
 import (
+	"bytes"
+	"io"
 	"log"
 	"main/config"
 	"main/dtos"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/mitchellh/mapstructure"
 )
 
 var globalRooms = make(map[string]map[*websocket.Conn]bool)
@@ -37,16 +38,25 @@ func HandleGlobalSocket(c *gin.Context) {
 			break
 		}
 
-		switch incoming.Type {
-		case "start_stream":
-			handleStartStream(incoming.Data)
-		}
+		// switch incoming.Type {
+		// case "start_stream":
+		// 	handleStartStream(incoming.Data)
+		// }
 	}
 }
 
-func handleStartStream(data interface{}) {
+func HandleStartStream(c *gin.Context) {
 	var streamMsg dtos.StartStreamMessage
-	if err := mapstructure.Decode(data, &streamMsg); err != nil {
+	bodyBytes, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		log.Println("Failed to read body:", err)
+		return
+	}
+	log.Println("Request body:", string(bodyBytes))
+
+	c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+	if err := c.ShouldBindJSON(&streamMsg); err != nil {
 		log.Println("Decode error: ", err)
 		return
 	}

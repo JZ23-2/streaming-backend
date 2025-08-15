@@ -25,6 +25,7 @@ func SetUpRoutes() {
 		ChatRoutes(api)
 		MessageRoutes(api)
 		GlobalSocketRoutes(api)
+		StreamRoutes(api)
 	}
 
 	r.Run(":6969")
