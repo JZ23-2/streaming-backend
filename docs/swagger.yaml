@@ -1,5 +1,112 @@
 basePath: /api/v1
 definitions:
+  dtos.CreateCategoryRequest:
+    properties:
+      categoryName:
+        example: nigger comedy
+        type: string
+    type: object
+  dtos.CreateStreamHistoryRequest:
+    properties:
+      hostPrincipalId:
+        example: user123
+        type: string
+      streamHistoryStreamId:
+        example: stream123
+        type: string
+      videoUrl:
+        example: supabase storage video
+        type: string
+    type: object
+  dtos.CreateStreamHistoryResponse:
+    properties:
+      duration:
+        type: integer
+      hostPrincipalId:
+        type: string
+      streamHistoryId:
+        type: string
+      streamHistoryStreamId:
+        type: string
+      videoUrl:
+        type: string
+    type: object
+  dtos.CreateStreamingResponse:
+    properties:
+      createAt:
+        type: string
+      hostPrincipalId:
+        type: string
+      streamCategoryId:
+        type: string
+      streamId:
+        type: string
+      thumbnail:
+        type: string
+      title:
+        type: string
+    type: object
+  dtos.CreateViewerHistoryRequest:
+    properties:
+      viewerHistoryPrincipalID:
+        example: user123
+        type: string
+      viewerHistoryStreamID:
+        example: stream123
+        type: string
+    type: object
+  dtos.CreateViewerHistoryResponse:
+    properties:
+      viewerHistoryID:
+        type: string
+      viewerHistoryPrincipalID:
+        type: string
+      viewerHistoryStreamID:
+        type: string
+    type: object
+  dtos.GetAllStreamResponse:
+    properties:
+      categoryName:
+        type: string
+      duration:
+        type: integer
+      hostPrincipalID:
+        type: string
+      messages:
+        items:
+          $ref: '#/definitions/dtos.MessageAllStreamResponse'
+        type: array
+      streamHistoryID:
+        type: string
+      streamHistoryStreamID:
+        type: string
+      thumbnail:
+        type: string
+      title:
+        type: string
+      totalView:
+        type: integer
+      videoUrl:
+        type: string
+    type: object
+  dtos.MessageAllStreamResponse:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      messageID:
+        type: string
+      senderID:
+        type: string
+    type: object
+  models.Category:
+    properties:
+      categoryID:
+        type: string
+      categoryName:
+        type: string
+    type: object
   models.Message:
     properties:
       content:
@@ -8,20 +115,9 @@ definitions:
         type: string
       messageID:
         type: string
+      messagePrincipalID:
+        type: string
       streamID:
-        type: string
-      user:
-        $ref: '#/definitions/models.User'
-      userMessageID:
-        type: string
-    type: object
-  models.User:
-    properties:
-      createdAt:
-        type: string
-      userID:
-        type: string
-      username:
         type: string
     type: object
 info:
@@ -34,6 +130,69 @@ info:
   title: Streaming Backend API
   version: "1.0"
 paths:
+  /category/create-category:
+    post:
+      consumes:
+      - application/json
+      description: Create Category
+      parameters:
+      - description: Category Name
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Category'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Category
+      tags:
+      - Category
+  /category/get-all-category:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all categories from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Category'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all categories
+      tags:
+      - Category
   /messages/{stream_id}:
     get:
       description: Retrieve all chat messages by Stream ID
@@ -67,4 +226,218 @@ paths:
       summary: Get all messages for a stream
       tags:
       - messages
+  /stream-history/all-stream:
+    get:
+      consumes:
+      - application/json
+      description: Get all stream history by streamerID
+      parameters:
+      - description: Host Principal ID
+        in: query
+        name: hostPrincipalID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/dtos.GetAllStreamResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all stream history by streamerID
+      tags:
+      - Stream History
+  /stream-history/by-id:
+    get:
+      consumes:
+      - application/json
+      description: Get stream history by streamHistoryID
+      parameters:
+      - description: Stream History ID
+        in: query
+        name: streamHistoryID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.GetAllStreamResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get stream history by streamHistoryID
+      tags:
+      - Stream History
+  /stream-history/create:
+    post:
+      consumes:
+      - application/json
+      description: Create Stream History
+      parameters:
+      - description: Stream History
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateStreamHistoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.CreateStreamHistoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Stream History
+      tags:
+      - Stream History
+  /streams/create-stream:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create Stream with thumbnail upload
+      parameters:
+      - description: Host Principal ID
+        in: formData
+        name: hostPrincipalId
+        required: true
+        type: string
+      - description: Stream title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Stream Category ID
+        in: formData
+        name: streamCategoryId
+        required: true
+        type: string
+      - description: Thumbnail file
+        in: formData
+        name: thumbnail
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.CreateStreamingResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Stream
+      tags:
+      - Stream
+  /viewer-history/create:
+    post:
+      consumes:
+      - application/json
+      description: Create Viewer History
+      parameters:
+      - description: Viewer History
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateViewerHistoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.CreateViewerHistoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Viewer History
+      tags:
+      - Viewer History
 swagger: "2.0"
