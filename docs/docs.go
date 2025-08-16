@@ -21,6 +21,102 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/category/create-category": {
+            "post": {
+                "description": "Create Category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Create Category",
+                "parameters": [
+                    {
+                        "description": "Category Name",
+                        "name": "category",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Category"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/category/get-all-category": {
+            "get": {
+                "description": "Retrieve all categories from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get all categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Category"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/messages/{stream_id}": {
             "get": {
                 "description": "Retrieve all chat messages by Stream ID",
@@ -70,9 +166,494 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/stream-history/all-stream": {
+            "get": {
+                "description": "Get all stream history by streamerID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream History"
+                ],
+                "summary": "Get all stream history by streamerID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Host Principal ID",
+                        "name": "hostPrincipalID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.GetAllStreamResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stream-history/by-id": {
+            "get": {
+                "description": "Get stream history by streamHistoryID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream History"
+                ],
+                "summary": "Get stream history by streamHistoryID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stream History ID",
+                        "name": "streamHistoryID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GetAllStreamResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stream-history/create": {
+            "post": {
+                "description": "Create Stream History",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream History"
+                ],
+                "summary": "Create Stream History",
+                "parameters": [
+                    {
+                        "description": "Stream History",
+                        "name": "category",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateStreamHistoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateStreamHistoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/streams/create-stream": {
+            "post": {
+                "description": "Create Stream with thumbnail upload",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream"
+                ],
+                "summary": "Create Stream",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Host Principal ID",
+                        "name": "hostPrincipalId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Stream title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Stream Category ID",
+                        "name": "streamCategoryId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Thumbnail file",
+                        "name": "thumbnail",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateStreamingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/viewer-history/create": {
+            "post": {
+                "description": "Create Viewer History",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Viewer History"
+                ],
+                "summary": "Create Viewer History",
+                "parameters": [
+                    {
+                        "description": "Viewer History",
+                        "name": "category",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateViewerHistoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateViewerHistoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "dtos.CreateCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string",
+                    "example": "nigger comedy"
+                }
+            }
+        },
+        "dtos.CreateStreamHistoryRequest": {
+            "type": "object",
+            "properties": {
+                "hostPrincipalId": {
+                    "type": "string",
+                    "example": "user123"
+                },
+                "streamHistoryStreamId": {
+                    "type": "string",
+                    "example": "stream123"
+                },
+                "videoUrl": {
+                    "type": "string",
+                    "example": "supabase storage video"
+                }
+            }
+        },
+        "dtos.CreateStreamHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "type": "integer"
+                },
+                "hostPrincipalId": {
+                    "type": "string"
+                },
+                "streamHistoryId": {
+                    "type": "string"
+                },
+                "streamHistoryStreamId": {
+                    "type": "string"
+                },
+                "videoUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.CreateStreamingResponse": {
+            "type": "object",
+            "properties": {
+                "createAt": {
+                    "type": "string"
+                },
+                "hostPrincipalId": {
+                    "type": "string"
+                },
+                "streamCategoryId": {
+                    "type": "string"
+                },
+                "streamId": {
+                    "type": "string"
+                },
+                "thumbnail": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.CreateViewerHistoryRequest": {
+            "type": "object",
+            "properties": {
+                "viewerHistoryPrincipalID": {
+                    "type": "string",
+                    "example": "user123"
+                },
+                "viewerHistoryStreamID": {
+                    "type": "string",
+                    "example": "stream123"
+                }
+            }
+        },
+        "dtos.CreateViewerHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "viewerHistoryID": {
+                    "type": "string"
+                },
+                "viewerHistoryPrincipalID": {
+                    "type": "string"
+                },
+                "viewerHistoryStreamID": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.GetAllStreamResponse": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "duration": {
+                    "type": "integer"
+                },
+                "hostPrincipalID": {
+                    "type": "string"
+                },
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.MessageAllStreamResponse"
+                    }
+                },
+                "streamHistoryID": {
+                    "type": "string"
+                },
+                "streamHistoryStreamID": {
+                    "type": "string"
+                },
+                "thumbnail": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "totalView": {
+                    "type": "integer"
+                },
+                "videoUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.MessageAllStreamResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "messageID": {
+                    "type": "string"
+                },
+                "senderID": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Category": {
+            "type": "object",
+            "properties": {
+                "categoryID": {
+                    "type": "string"
+                },
+                "categoryName": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Message": {
             "type": "object",
             "properties": {
@@ -85,27 +666,10 @@ const docTemplate = `{
                 "messageID": {
                     "type": "string"
                 },
+                "messagePrincipalID": {
+                    "type": "string"
+                },
                 "streamID": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/models.User"
-                },
-                "userMessageID": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.User": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "userID": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }

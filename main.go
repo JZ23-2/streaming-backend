@@ -5,6 +5,7 @@ import (
 	"main/database"
 	_ "main/docs"
 	"main/routes"
+	"main/storage"
 )
 
 // @title           Streaming Backend API
@@ -16,6 +17,7 @@ import (
 // @BasePath        /api/v1
 func main() {
 	config.Loadenv()
+	storage.Init()
 	database.ConnectDB()
 	routes.SetUpRoutes()
 }
