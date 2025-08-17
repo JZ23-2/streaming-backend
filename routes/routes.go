@@ -26,6 +26,9 @@ func SetUpRoutes() {
 		MessageRoutes(api)
 		GlobalSocketRoutes(api)
 		StreamRoutes(api)
+		CategoryRoutes(api)
+		StreamHistoryRoutes(api)
+		ViewerHistoryRoutes(api)
 	}
 
 	r.Run(":6969")
