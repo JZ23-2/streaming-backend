@@ -16,7 +16,7 @@ import (
 // @Tags         Stream History
 // @Accept       json
 // @Produce      json
-// @Param        category  body      dtos.CreateStreamHistoryRequest  true  "Stream History"
+// @Param        CreateStreamHistory  body      dtos.CreateStreamHistoryRequest  true  "Stream History"
 // @Success      201   {object}  dtos.CreateStreamHistoryResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      409   {object}  map[string]string
@@ -51,7 +51,7 @@ func CreateStreamHistoryController(c *gin.Context) {
 //
 //	@Param			hostPrincipalID	query		string	true	"Host Principal ID"
 //
-// @Success      201   {object}  []dtos.GetAllStreamResponse
+// @Success      201   {object}  []dtos.GetAllStreamHistoryResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      409   {object}  map[string]string
 // @Failure      500   {object}  map[string]string
@@ -78,7 +78,7 @@ func GetAllStreamHistoryByStreamerIDController(c *gin.Context) {
 //
 //	@Param			streamHistoryID	query		string	true	"Stream History ID"
 //
-// @Success      201   {object}  dtos.GetAllStreamResponse
+// @Success      201   {object}  dtos.GetAllStreamHistoryResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      409   {object}  map[string]string
 // @Failure      500   {object}  map[string]string
