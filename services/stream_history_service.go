@@ -65,7 +65,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 
 		var totalViews int64
 		database.DB.Model(&models.ViewerHistory{}).
-			Where("viewer_history_stream_id = ?", s.StreamHistoryStreamID).
+			Where("viewer_history_stream_history_id = ?", s.StreamHistoryID).
 			Count(&totalViews)
 
 		resp := dtos.GetAllStreamHistoryResponse{
@@ -109,7 +109,7 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryR
 
 	var totalViews int64
 	database.DB.Model(&models.ViewerHistory{}).
-		Where("viewer_history_stream_id = ?", streamHistory.StreamHistoryStreamID).
+		Where("viewer_history_stream_history_id = ?", streamHistory.StreamHistoryID).
 		Count(&totalViews)
 
 	resp := &dtos.GetAllStreamHistoryResponse{

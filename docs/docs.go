@@ -820,7 +820,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "user123"
                 },
-                "viewerHistoryStreamID": {
+                "viewerHistoryStreamHistoryID": {
                     "type": "string",
                     "example": "stream123"
                 }
@@ -835,7 +835,7 @@ const docTemplate = `{
                 "viewerHistoryPrincipalID": {
                     "type": "string"
                 },
-                "viewerHistoryStreamID": {
+                "viewerHistoryStreamHistoryID": {
                     "type": "string"
                 }
             }

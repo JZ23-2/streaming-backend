@@ -813,7 +813,7 @@
                     "type": "string",
                     "example": "user123"
                 },
-                "viewerHistoryStreamID": {
+                "viewerHistoryStreamHistoryID": {
                     "type": "string",
                     "example": "stream123"
                 }
@@ -828,7 +828,7 @@
                 "viewerHistoryPrincipalID": {
                     "type": "string"
                 },
-                "viewerHistoryStreamID": {
+                "viewerHistoryStreamHistoryID": {
                     "type": "string"
                 }
             }
