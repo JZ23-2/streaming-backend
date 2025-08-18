@@ -39,7 +39,7 @@ func CreateStreamHistory(req dtos.CreateStreamHistoryRequest) (*dtos.CreateStrea
 	return &resp, nil
 }
 
-func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStreamResponse, error) {
+func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStreamHistoryResponse, error) {
 	var streamHistories []models.StreamHistory
 
 	if err := database.DB.
@@ -50,7 +50,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 		return nil, err
 	}
 
-	var responses []dtos.GetAllStreamResponse
+	var responses []dtos.GetAllStreamHistoryResponse
 	for _, s := range streamHistories {
 
 		var messages []dtos.MessageAllStreamResponse
@@ -68,7 +68,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 			Where("viewer_history_stream_id = ?", s.StreamHistoryStreamID).
 			Count(&totalViews)
 
-		resp := dtos.GetAllStreamResponse{
+		resp := dtos.GetAllStreamHistoryResponse{
 			StreamHistoryID:          s.StreamHistoryID,
 			StreamHistoryStreamID:    s.StreamHistoryStreamID,
 			HostPrincipalID:          s.HostPrincipalID,
@@ -86,7 +86,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 	return responses, nil
 }
 
-func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamResponse, error) {
+func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryResponse, error) {
 	var streamHistory models.StreamHistory
 
 	if err := database.DB.
@@ -112,7 +112,7 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamResponse
 		Where("viewer_history_stream_id = ?", streamHistory.StreamHistoryStreamID).
 		Count(&totalViews)
 
-	resp := &dtos.GetAllStreamResponse{
+	resp := &dtos.GetAllStreamHistoryResponse{
 		StreamHistoryID:          streamHistory.StreamHistoryID,
 		StreamHistoryStreamID:    streamHistory.StreamHistoryStreamID,
 		HostPrincipalID:          streamHistory.HostPrincipalID,

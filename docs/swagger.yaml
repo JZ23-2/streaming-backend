@@ -37,7 +37,7 @@ definitions:
         type: string
       hostPrincipalId:
         type: string
-      streamCategoryId:
+      streamCategoryName:
         type: string
       streamId:
         type: string
@@ -64,7 +64,28 @@ definitions:
       viewerHistoryStreamID:
         type: string
     type: object
-  dtos.GetAllStreamResponse:
+  dtos.GetActiveAllStreamResponse:
+    properties:
+      categoryName:
+        type: string
+      createdAt:
+        type: string
+      hostPrincipalID:
+        type: string
+      isActive:
+        type: boolean
+      messages:
+        items:
+          $ref: '#/definitions/dtos.MessageAllStreamResponse'
+        type: array
+      streamId:
+        type: string
+      thumbnail:
+        type: string
+      title:
+        type: string
+    type: object
+  dtos.GetAllStreamHistoryResponse:
     properties:
       categoryName:
         type: string
@@ -98,6 +119,30 @@ definitions:
       messageID:
         type: string
       senderID:
+        type: string
+    type: object
+  dtos.UpdateStreamActiveStatusRequest:
+    properties:
+      isActive:
+        example: true
+        type: boolean
+      streamID:
+        example: stream123
+        type: string
+    type: object
+  dtos.UpdateStreamingResponse:
+    properties:
+      createAt:
+        type: string
+      hostPrincipalId:
+        type: string
+      streamCategoryName:
+        type: string
+      streamId:
+        type: string
+      thumbnail:
+        type: string
+      title:
         type: string
     type: object
   models.Category:
@@ -244,7 +289,7 @@ paths:
           description: Created
           schema:
             items:
-              $ref: '#/definitions/dtos.GetAllStreamResponse'
+              $ref: '#/definitions/dtos.GetAllStreamHistoryResponse'
             type: array
         "400":
           description: Bad Request
@@ -284,7 +329,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dtos.GetAllStreamResponse'
+            $ref: '#/definitions/dtos.GetAllStreamHistoryResponse'
         "400":
           description: Bad Request
           schema:
@@ -314,7 +359,7 @@ paths:
       parameters:
       - description: Stream History
         in: body
-        name: category
+        name: CreateStreamHistory
         required: true
         schema:
           $ref: '#/definitions/dtos.CreateStreamHistoryRequest'
@@ -346,6 +391,80 @@ paths:
       summary: Create Stream History
       tags:
       - Stream History
+  /streams/all-active-stream:
+    get:
+      consumes:
+      - application/json
+      description: Get all active stream
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.GetActiveAllStreamResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all active stream
+      tags:
+      - Stream
+  /streams/by-stream-id:
+    get:
+      consumes:
+      - application/json
+      description: Get active stream by streamID
+      parameters:
+      - description: Stream ID
+        in: query
+        name: streamID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.GetActiveAllStreamResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get active stream by streamID
+      tags:
+      - Stream
   /streams/create-stream:
     post:
       consumes:
@@ -398,6 +517,99 @@ paths:
               type: string
             type: object
       summary: Create Stream
+      tags:
+      - Stream
+  /streams/update-active-status:
+    patch:
+      consumes:
+      - application/json
+      description: Update stream active status
+      parameters:
+      - description: Update Stream
+        in: body
+        name: UpdateStream
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateStreamActiveStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.GetActiveAllStreamResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update stream active status
+      tags:
+      - Stream
+  /streams/update-stream:
+    patch:
+      consumes:
+      - multipart/form-data
+      description: Update Stream
+      parameters:
+      - description: Stream ID
+        in: formData
+        name: streamId
+        required: true
+        type: string
+      - description: Stream title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Stream Category ID
+        in: formData
+        name: streamCategoryId
+        required: true
+        type: string
+      - description: Thumbnail file
+        in: formData
+        name: thumbnail
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UpdateStreamingResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update Stream
       tags:
       - Stream
   /viewer-history/create:

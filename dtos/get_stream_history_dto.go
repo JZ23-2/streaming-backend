@@ -2,7 +2,7 @@ package dtos
 
 import "time"
 
-type GetAllStreamResponse struct {
+type GetAllStreamHistoryResponse struct {
 	StreamHistoryID          string                     `json:"streamHistoryID"`
 	StreamHistoryStreamID    string                     `json:"streamHistoryStreamID"`
 	HostPrincipalID          string                     `json:"hostPrincipalID"`
