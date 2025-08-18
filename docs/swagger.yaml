@@ -51,7 +51,7 @@ definitions:
       viewerHistoryPrincipalID:
         example: user123
         type: string
-      viewerHistoryStreamID:
+      viewerHistoryStreamHistoryID:
         example: stream123
         type: string
     type: object
@@ -61,7 +61,7 @@ definitions:
         type: string
       viewerHistoryPrincipalID:
         type: string
-      viewerHistoryStreamID:
+      viewerHistoryStreamHistoryID:
         type: string
     type: object
   dtos.GetActiveAllStreamResponse:

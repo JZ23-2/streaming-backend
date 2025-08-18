@@ -11,9 +11,9 @@ func CreateViewerHistory(req dtos.CreateViewerHistoryRequest) (*dtos.CreateViewe
 	viewerHistoryID := helper.GenerateID()
 
 	viewerHistory := models.ViewerHistory{
-		ViewerHistoryID:          viewerHistoryID,
-		ViewerHistoryStreamID:    req.ViewerHistoryStreamID,
-		ViewerHistoryPrincipalID: req.ViewerHistoryPrincipalID,
+		ViewerHistoryID:              viewerHistoryID,
+		ViewerHistoryStreamHistoryID: req.ViewerHistoryStreamHistoryID,
+		ViewerHistoryPrincipalID:     req.ViewerHistoryPrincipalID,
 	}
 
 	if err := database.DB.Create(&viewerHistory).Error; err != nil {
@@ -21,9 +21,9 @@ func CreateViewerHistory(req dtos.CreateViewerHistoryRequest) (*dtos.CreateViewe
 	}
 
 	resp := dtos.CreateViewerHistoryResponse{
-		ViewerHistoryID:          viewerHistory.ViewerHistoryID,
-		ViewerHistoryStreamID:    viewerHistory.ViewerHistoryStreamID,
-		ViewerHistoryPrincipalID: viewerHistory.ViewerHistoryPrincipalID,
+		ViewerHistoryID:              viewerHistory.ViewerHistoryID,
+		ViewerHistoryStreamHistoryID: viewerHistory.ViewerHistoryStreamHistoryID,
+		ViewerHistoryPrincipalID:     viewerHistory.ViewerHistoryPrincipalID,
 	}
 
 	return &resp, nil
