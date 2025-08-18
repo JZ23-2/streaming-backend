@@ -10,5 +10,6 @@ func ChatRoutes(api *gin.RouterGroup) {
 	chat := api.Group("/chats")
 	{
 		chat.GET("/ws/:streamID", controllers.HandleWebSocket)
+		chat.GET("/:streamID/viewer-count", controllers.HandleGetViewerCount)
 	}
 }

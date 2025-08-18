@@ -34,12 +34,15 @@ func HandleWebSocket(c *gin.Context) {
 
 	chatRooms[streamID][conn] = true
 
+	broadcastViewerCount(streamID)
+
 	for {
 		var incoming dtos.SocketMessage
 		err := conn.ReadJSON(&incoming)
 		if err != nil {
 			log.Println("Read error: ", err)
 			delete(chatRooms[streamID], conn)
+			broadcastViewerCount(streamID)
 			break
 		}
 
@@ -47,7 +50,6 @@ func HandleWebSocket(c *gin.Context) {
 		case "chat_message":
 			handleChatMessage(streamID, incoming.Data)
 		}
-
 	}
 }
 
@@ -82,4 +84,30 @@ func handleMessages() {
 			}
 		}
 	}
+}
+
+func broadcastViewerCount(streamID string) {
+	count := len(chatRooms[streamID])
+	msg := dtos.SocketMessage{
+		Type: "viewer_count",
+		Data: count,
+	}
+
+	for conn := range chatRooms[streamID] {
+		if err := conn.WriteJSON(msg); err != nil {
+			log.Println("Write error:", err)
+			conn.Close()
+			delete(chatRooms[streamID], conn)
+		}
+	}
+}
+
+func HandleGetViewerCount(c *gin.Context) {
+	streamID := c.Param("streamID")
+	count := 0
+
+	if conns, ok := chatRooms[streamID]; ok {
+		count = len(conns)
+	}
+	c.JSON(200, count)
 }
