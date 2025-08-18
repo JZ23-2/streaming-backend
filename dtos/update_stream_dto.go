@@ -5,14 +5,19 @@ import (
 	"time"
 )
 
-type CreateStreamingRequest struct {
-	HostPrincipalID  string                `json:"hostPrincipalId" example:"nigger 123"`
+type UpdateStreamActiveStatusRequest struct {
+	StreamID string `json:"streamID" example:"stream123"`
+	IsActive bool   `json:"isActive" example:"true"`
+}
+
+type UpdateStreamingRequest struct {
+	StreamID         string                `json:"streamId" example:"stream 123"`
 	Title            string                `json:"title" example:"nigger show"`
 	Thumbnail        *multipart.FileHeader `form:"thumbnail" swaggerignore:"false"`
 	StreamCategoryID string                `json:"streamCategoryId" example:"nigger category"`
 }
 
-type CreateStreamingResponse struct {
+type UpdateStreamingResponse struct {
 	StreamID           string    `json:"streamId"`
 	HostPrincipalID    string    `json:"hostPrincipalId"`
 	Title              string    `json:"title"`

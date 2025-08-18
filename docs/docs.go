@@ -195,7 +195,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dtos.GetAllStreamResponse"
+                                "$ref": "#/definitions/dtos.GetAllStreamHistoryResponse"
                             }
                         }
                     },
@@ -255,7 +255,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dtos.GetAllStreamResponse"
+                            "$ref": "#/definitions/dtos.GetAllStreamHistoryResponse"
                         }
                     },
                     "400": {
@@ -304,7 +304,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Stream History",
-                        "name": "category",
+                        "name": "CreateStreamHistory",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -317,6 +317,118 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/dtos.CreateStreamHistoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/streams/all-active-stream": {
+            "get": {
+                "description": "Get all active stream",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream"
+                ],
+                "summary": "Get all active stream",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dtos.GetActiveAllStreamResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/streams/by-stream-id": {
+            "get": {
+                "description": "Get active stream by streamID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream"
+                ],
+                "summary": "Get active stream by streamID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stream ID",
+                        "name": "streamID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GetActiveAllStreamResponse"
                         }
                     },
                     "400": {
@@ -397,6 +509,146 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/dtos.CreateStreamingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/streams/update-active-status": {
+            "patch": {
+                "description": "Update stream active status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream"
+                ],
+                "summary": "Update stream active status",
+                "parameters": [
+                    {
+                        "description": "Update Stream",
+                        "name": "UpdateStream",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateStreamActiveStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GetActiveAllStreamResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/streams/update-stream": {
+            "patch": {
+                "description": "Update Stream",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream"
+                ],
+                "summary": "Update Stream",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stream ID",
+                        "name": "streamId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Stream title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Stream Category ID",
+                        "name": "streamCategoryId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Thumbnail file",
+                        "name": "thumbnail",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateStreamingResponse"
                         }
                     },
                     "400": {
@@ -547,7 +799,7 @@ const docTemplate = `{
                 "hostPrincipalId": {
                     "type": "string"
                 },
-                "streamCategoryId": {
+                "streamCategoryName": {
                     "type": "string"
                 },
                 "streamId": {
@@ -588,7 +840,39 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.GetAllStreamResponse": {
+        "dtos.GetActiveAllStreamResponse": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "hostPrincipalID": {
+                    "type": "string"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.MessageAllStreamResponse"
+                    }
+                },
+                "streamId": {
+                    "type": "string"
+                },
+                "thumbnail": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.GetAllStreamHistoryResponse": {
             "type": "object",
             "properties": {
                 "categoryName": {
@@ -639,6 +923,42 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "senderID": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.UpdateStreamActiveStatusRequest": {
+            "type": "object",
+            "properties": {
+                "isActive": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "streamID": {
+                    "type": "string",
+                    "example": "stream123"
+                }
+            }
+        },
+        "dtos.UpdateStreamingResponse": {
+            "type": "object",
+            "properties": {
+                "createAt": {
+                    "type": "string"
+                },
+                "hostPrincipalId": {
+                    "type": "string"
+                },
+                "streamCategoryName": {
+                    "type": "string"
+                },
+                "streamId": {
+                    "type": "string"
+                },
+                "thumbnail": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

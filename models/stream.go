@@ -8,6 +8,7 @@ type Stream struct {
 	Title            string `gorm:"type:varchar(255)"`
 	Thumbnail        string `gorm:"type:varchar(255)"`
 	StreamCategoryID string `gorm:"type:varchar(255)"`
+	IsActive         bool   `gorm:"type:bool;default:false"`
 
 	Category  Category  `gorm:"foreignKey:StreamCategoryID;references:CategoryID"`
 	Messages  []Message `gorm:"foreignKey:StreamID;references:StreamID"`
