@@ -5,6 +5,7 @@ import (
 	"main/config"
 	"main/dtos"
 	"main/services"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -104,10 +105,15 @@ func broadcastViewerCount(streamID string) {
 
 func HandleGetViewerCount(c *gin.Context) {
 	streamID := c.Param("streamID")
-	count := 0
+	count := GetViewerCount((streamID))
 
+	c.JSON(http.StatusOK, count)
+}
+
+func GetViewerCount(streamID string) int {
 	if conns, ok := chatRooms[streamID]; ok {
-		count = len(conns)
+		return len(conns)
 	}
-	c.JSON(200, count)
+
+	return 0
 }

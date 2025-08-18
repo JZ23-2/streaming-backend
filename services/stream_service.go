@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"main/controllers"
 	"main/database"
 	"main/dtos"
 	"main/helper"
@@ -101,6 +102,7 @@ func GetAllActiveStream() ([]dtos.GetActiveAllStreamResponse, error) {
 			IsActive:                 s.IsActive,
 			CreatedAt:                s.CreatedAt,
 			MessageAllStreamResponse: messages,
+			ViewerCount:              controllers.GetViewerCount(s.HostPrincipalID),
 		}
 		responses = append(responses, resp)
 	}

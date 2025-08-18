@@ -11,4 +11,5 @@ type GetActiveAllStreamResponse struct {
 	IsActive                 bool                       `json:"isActive"`
 	CreatedAt                time.Time                  `json:"createdAt"`
 	MessageAllStreamResponse []MessageAllStreamResponse `json:"messages"`
+	ViewerCount              int                        `json:"viewerCount"`
 }
