@@ -69,6 +69,10 @@ func GetAllActiveStreamController(c *gin.Context) {
 		return
 	}
 
+	for i := range resp {
+		resp[i].ViewerCount = GetViewerCount(resp[i].HostPrincipalID)
+	}
+
 	utils.SuccessResponse(c, 200, "active stream found!", resp)
 }
 
