@@ -90,7 +90,7 @@ func GetAllStreamHistoryByIdController(c *gin.Context) {
 		return
 	}
 
-	resp, err := services.GetAllStreamHistoryByID(req)
+	resp, err := services.GetStreamHistoryByID(req)
 
 	if err != nil {
 		log.Println(err)

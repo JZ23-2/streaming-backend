@@ -52,7 +52,7 @@ func CreateStreamHistory(req dtos.CreateStreamHistoryRequest) (*dtos.CreateStrea
 	return &resp, nil
 }
 
-func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStreamHistoryResponse, error) {
+func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.StreamHistoryResponse, error) {
 	var streamHistories []models.StreamHistory
 
 	if err := database.DB.
@@ -64,7 +64,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 		return nil, err
 	}
 
-	var responses []dtos.GetAllStreamHistoryResponse
+	var responses []dtos.StreamHistoryResponse
 	for _, s := range streamHistories {
 
 		var messages []dtos.MessageResponse
@@ -82,7 +82,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 			Where("viewer_history_stream_history_id = ?", s.StreamHistoryID).
 			Count(&totalViews)
 
-		resp := dtos.GetAllStreamHistoryResponse{
+		resp := dtos.StreamHistoryResponse{
 			StreamHistoryID:       s.StreamHistoryID,
 			StreamHistoryStreamID: s.StreamHistoryStreamID,
 			HostPrincipalID:       s.HostPrincipalID,
@@ -105,7 +105,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 	return responses, nil
 }
 
-func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryResponse, error) {
+func GetStreamHistoryByID(streamHistoryID string) (*dtos.StreamHistoryResponse, error) {
 	var streamHistory models.StreamHistory
 
 	if err := database.DB.
@@ -131,7 +131,7 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryR
 		Where("viewer_history_stream_history_id = ?", streamHistory.StreamHistoryID).
 		Count(&totalViews)
 
-	resp := &dtos.GetAllStreamHistoryResponse{
+	resp := &dtos.StreamHistoryResponse{
 		StreamHistoryID:       streamHistory.StreamHistoryID,
 		StreamHistoryStreamID: streamHistory.StreamHistoryStreamID,
 		HostPrincipalID:       streamHistory.HostPrincipalID,
@@ -140,14 +140,8 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryR
 		Thumbnail:             streamHistory.Stream.ThumbnailURL,
 		MessageResponse:       messages,
 		TotalView:             int(totalViews),
-	}
-
-	if streamHistory.Stream.StreamInfo != nil {
-		resp.Title = streamHistory.Title
-	}
-
-	if streamHistory.Category != nil {
-		resp.CategoryName = &streamHistory.Category.CategoryName
+		Title:                 streamHistory.Title,
+		CategoryName:          &streamHistory.Category.CategoryName,
 	}
 
 	return resp, nil
