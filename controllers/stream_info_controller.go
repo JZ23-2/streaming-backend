@@ -62,7 +62,7 @@ func GetStreamInfoByUserID(c *gin.Context) {
 	resp := dtos.StreamInfoResponse{
 		HostPrincipalID: streamInfo.HostPrincipalID,
 		Title:           streamInfo.Title,
-		CategoryName:    streamInfo.Category.CategoryName,
+		CategoryId:      *streamInfo.StreamCategoryID,
 	}
 
 	utils.SuccessResponse(c, http.StatusOK, "stream info retrieved", resp)

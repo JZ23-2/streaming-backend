@@ -9,7 +9,7 @@ import (
 func StreamInfoRoutes(api *gin.RouterGroup) {
 	streamInfo := api.Group("/stream-info")
 	{
-		streamInfo.PUT("/", controllers.CreateOrUpdateStreamInfo)
+		streamInfo.PUT("", controllers.CreateOrUpdateStreamInfo)
 		streamInfo.GET("/:hostPrincipalID", controllers.GetStreamInfoByUserID)
 
 	}

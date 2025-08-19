@@ -102,14 +102,14 @@ func GetAllActiveStream() ([]dtos.StreamResponse, error) {
 			CreatedAt:       s.CreatedAt,
 			Messages:        messages,
 		}
-		responses = append(responses, resp)
+
 		streamInfo, err := GetStreamInfoByUserID(s.HostPrincipalID)
 		if err == nil {
 			resp.Title = streamInfo.Title
 			resp.CategoryName = streamInfo.Category.CategoryName
 		}
+		responses = append(responses, resp)
 	}
-
 	return responses, nil
 }
 
