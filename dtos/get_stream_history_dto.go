@@ -1,5 +1,7 @@
 package dtos
 
+import "time"
+
 type GetAllStreamHistoryResponse struct {
 	StreamHistoryID       string            `json:"streamHistoryID"`
 	StreamHistoryStreamID string            `json:"streamHistoryStreamID"`
@@ -11,4 +13,5 @@ type GetAllStreamHistoryResponse struct {
 	CategoryName          *string           `json:"categoryName"`
 	MessageResponse       []MessageResponse `json:"messages"`
 	TotalView             int               `json:"totalView"`
+	CreatedAt             time.Time         `json:"createdAt"`
 }

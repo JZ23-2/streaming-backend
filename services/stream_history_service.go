@@ -30,6 +30,13 @@ func CreateStreamHistory(req dtos.CreateStreamHistoryRequest) (*dtos.CreateStrea
 		Duration:              int(duration),
 	}
 
+	if stream.StreamInfoID != nil {
+		streamHistory.Title = stream.StreamInfo.Title
+		if stream.StreamInfo.StreamCategoryID != nil {
+			streamHistory.StreamCategoryID = stream.StreamInfo.StreamCategoryID
+		}
+	}
+
 	if err := database.DB.Create(&streamHistory).Error; err != nil {
 		return nil, err
 	}
@@ -84,13 +91,11 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 			Thumbnail:             s.Stream.ThumbnailURL,
 			MessageResponse:       messages,
 			TotalView:             int(totalViews),
+			Title:                 s.Title,
+			CreatedAt:             s.CreatedAt,
 		}
 
-		if s.Stream.StreamInfo != nil {
-			resp.Title = s.Stream.StreamInfo.Title
-		}
-
-		if s.Category != nil {
+		if s.StreamCategoryID != nil {
 			resp.CategoryName = &s.Category.CategoryName
 		}
 
@@ -138,7 +143,7 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryR
 	}
 
 	if streamHistory.Stream.StreamInfo != nil {
-		resp.Title = streamHistory.Stream.StreamInfo.Title
+		resp.Title = streamHistory.Title
 	}
 
 	if streamHistory.Category != nil {

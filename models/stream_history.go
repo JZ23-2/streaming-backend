@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type StreamHistory struct {
 	StreamHistoryID       string  `gorm:"PrimaryKey;type:varchar(255)"`
 	StreamHistoryStreamID string  `gorm:"type:varchar(255)"`
@@ -11,4 +13,6 @@ type StreamHistory struct {
 
 	Category *Category `gorm:"foreignKey:StreamCategoryID;references:CategoryID"`
 	Stream   Stream    `gorm:"foreignKey:StreamHistoryStreamID;references:StreamID"`
+
+	CreatedAt time.Time
 }

@@ -193,7 +193,7 @@ func StopStream(streamerID string) (*dtos.StreamResponse, error) {
 	return resp, nil
 }
 
-func GetActiveStreamByStreamerID(streamerID string) (*dtos.StreamResponse, error) {
+func GetActiveStreamByStreamerID(streamerID string) (*models.Stream, error) {
 	var stream models.Stream
 
 	if err := database.DB.
@@ -205,31 +205,5 @@ func GetActiveStreamByStreamerID(streamerID string) (*dtos.StreamResponse, error
 		return nil, err
 	}
 
-	var messages []dtos.MessageResponse
-	for _, m := range stream.Messages {
-		messages = append(messages, dtos.MessageResponse{
-			MessageID: m.MessageID,
-			SenderID:  m.MessagePrincipalID,
-			Content:   m.Content,
-			CreatedAt: m.CreatedAt,
-		})
-	}
-
-	resp := dtos.StreamResponse{
-		StreamID:        stream.StreamID,
-		HostPrincipalID: stream.HostPrincipalID,
-		ThumbnailURL:    stream.ThumbnailURL,
-		IsActive:        stream.IsActive,
-		CreatedAt:       stream.CreatedAt,
-		Messages:        messages,
-	}
-
-	if stream.StreamInfoID != nil {
-		resp.Title = stream.StreamInfo.Title
-		if stream.StreamInfo.StreamCategoryID != nil {
-			resp.CategoryName = stream.StreamInfo.Category.CategoryName
-		}
-	}
-
-	return &resp, nil
+	return &stream, nil
 }

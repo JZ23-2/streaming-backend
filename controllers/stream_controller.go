@@ -153,10 +153,25 @@ func GetActiveStreamByStreamerIDController(c *gin.Context) {
 		return
 	}
 
-	resp, err := services.GetActiveStreamByStreamerID(streamerID)
+	stream, err := services.GetActiveStreamByStreamerID(streamerID)
 	if err != nil {
 		utils.FailedResponse(c, http.StatusInternalServerError, "something wrong")
 		return
+	}
+
+	resp := dtos.StreamResponse{
+		StreamID:        stream.StreamID,
+		HostPrincipalID: stream.HostPrincipalID,
+		ThumbnailURL:    stream.ThumbnailURL,
+		IsActive:        stream.IsActive,
+		CreatedAt:       stream.CreatedAt,
+	}
+
+	if stream.StreamInfoID != nil {
+		resp.Title = stream.StreamInfo.Title
+		if stream.StreamInfo.StreamCategoryID != nil {
+			resp.CategoryName = stream.StreamInfo.Category.CategoryName
+		}
 	}
 
 	utils.SuccessResponse(c, 200, "success", resp)
