@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"log"
 	"main/database"
 	"main/dtos"
 	"main/helper"
@@ -33,7 +32,7 @@ func CreateStream(req dtos.CreateStreamingRequest) (*dtos.CreateStreamingRespons
 	streamID := helper.GenerateID()
 
 	thumbnailURL, err := UploadThumbnail(req.Thumbnail, streamID)
-	log.Println(thumbnailURL, err)
+
 	stream := models.Stream{
 		StreamID:        streamID,
 		HostPrincipalID: req.HostPrincipalID,
@@ -42,10 +41,14 @@ func CreateStream(req dtos.CreateStreamingRequest) (*dtos.CreateStreamingRespons
 		IsActive:        true,
 	}
 
-	if err != nil {
+	if err == nil {
 		stream.ThumbnailURL = thumbnailURL
 	}
 
+	streamInfo, err := GetStreamInfoByUserID(req.HostPrincipalID)
+	if err == nil {
+		stream.StreamInfoID = &streamInfo.HostPrincipalID
+	}
 	if err := database.DB.Create(&stream).Error; err != nil {
 		return nil, err
 	}
