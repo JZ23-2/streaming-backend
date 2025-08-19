@@ -49,7 +49,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 	var streamHistories []models.StreamHistory
 
 	if err := database.DB.
-		Preload("Stream.Category").
+		Preload("Category").
 		Preload("Stream.Messages").
 		Preload("Stream.StreamInfo").
 		Where("host_principal_id = ?", hostPrincipalID).
@@ -81,12 +81,19 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 			HostPrincipalID:       s.HostPrincipalID,
 			VideoUrl:              s.VideoUrl,
 			Duration:              s.Duration,
-			Title:                 s.Stream.StreamInfo.Title,
 			Thumbnail:             s.Stream.ThumbnailURL,
-			CategoryName:          &s.Stream.StreamInfo.Category.CategoryName,
 			MessageResponse:       messages,
 			TotalView:             int(totalViews),
 		}
+
+		if s.Stream.StreamInfo != nil {
+			resp.Title = s.Stream.StreamInfo.Title
+		}
+
+		if s.Category != nil {
+			resp.CategoryName = &s.Category.CategoryName
+		}
+
 		responses = append(responses, resp)
 	}
 
@@ -97,9 +104,8 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryR
 	var streamHistory models.StreamHistory
 
 	if err := database.DB.
-		Preload("Stream.Category").
+		Preload("Category").
 		Preload("Stream.Messages").
-		Preload("Stream.StreamInfo").
 		Where("stream_history_id = ?", streamHistoryID).
 		First(&streamHistory).Error; err != nil {
 		return nil, err
@@ -126,11 +132,17 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryR
 		HostPrincipalID:       streamHistory.HostPrincipalID,
 		VideoUrl:              streamHistory.VideoUrl,
 		Duration:              streamHistory.Duration,
-		Title:                 streamHistory.Stream.StreamInfo.Title,
 		Thumbnail:             streamHistory.Stream.ThumbnailURL,
-		CategoryName:          &streamHistory.Stream.StreamInfo.Category.CategoryName,
 		MessageResponse:       messages,
 		TotalView:             int(totalViews),
+	}
+
+	if streamHistory.Stream.StreamInfo != nil {
+		resp.Title = streamHistory.Stream.StreamInfo.Title
+	}
+
+	if streamHistory.Category != nil {
+		resp.CategoryName = &streamHistory.Category.CategoryName
 	}
 
 	return resp, nil

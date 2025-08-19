@@ -8,11 +8,8 @@ definitions:
     type: object
   dtos.CreateStreamHistoryRequest:
     properties:
-      hostPrincipalId:
+      hostPrincipalID:
         example: user123
-        type: string
-      streamHistoryStreamId:
-        example: stream123
         type: string
       videoUrl:
         example: supabase storage video
@@ -148,7 +145,7 @@ definitions:
     type: object
   dtos.UpdateStreamActiveStatusRequest:
     properties:
-      hostPrincipalID:
+      hostPrincipalId:
         example: stream123
         type: string
     type: object
@@ -549,6 +546,45 @@ paths:
               type: string
             type: object
       summary: Get active stream by streamID
+      tags:
+      - Stream
+  /streams/by-streamer-id:
+    get:
+      consumes:
+      - application/json
+      description: Get active stream by streamerID
+      parameters:
+      - description: Streamer ID
+        in: query
+        name: streamerID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.StreamResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get active stream by streamerID
       tags:
       - Stream
   /streams/create-stream:

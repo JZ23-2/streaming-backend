@@ -13,5 +13,6 @@ func StreamRoutes(api *gin.RouterGroup) {
 		stream.POST("/stop-stream", controllers.StopActiveStream)
 		stream.GET("/all-active-stream", controllers.GetAllActiveStreamController)
 		stream.GET("/by-stream-id", controllers.GetActiveStreamByStreamIDController)
+		stream.GET("/by-streamer-id", controllers.GetActiveStreamByStreamerIDController)
 	}
 }

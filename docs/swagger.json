@@ -574,6 +574,65 @@
                 }
             }
         },
+        "/streams/by-streamer-id": {
+            "get": {
+                "description": "Get active stream by streamerID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stream"
+                ],
+                "summary": "Get active stream by streamerID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Streamer ID",
+                        "name": "streamerID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.StreamResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/streams/create-stream": {
             "post": {
                 "description": "Create Stream with thumbnail upload",
@@ -790,13 +849,9 @@
         "dtos.CreateStreamHistoryRequest": {
             "type": "object",
             "properties": {
-                "hostPrincipalId": {
+                "hostPrincipalID": {
                     "type": "string",
                     "example": "user123"
-                },
-                "streamHistoryStreamId": {
-                    "type": "string",
-                    "example": "stream123"
                 },
                 "videoUrl": {
                     "type": "string",
@@ -1001,7 +1056,7 @@
         "dtos.UpdateStreamActiveStatusRequest": {
             "type": "object",
             "properties": {
-                "hostPrincipalID": {
+                "hostPrincipalId": {
                     "type": "string",
                     "example": "stream123"
                 }

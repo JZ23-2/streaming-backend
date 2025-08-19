@@ -117,10 +117,9 @@ func GetActiveStreamByStreamID(streamID string) (*dtos.StreamResponse, error) {
 	var stream models.Stream
 
 	if err := database.DB.
-		Preload("Category").
 		Preload("Messages").
-		Preload("StreamInfo").
-		Where("is_active = ?", true).
+		Preload("StreamInfo.Category").
+		Where("stream_id = ? and is_active = ? ", streamID, true).
 		First(&stream).Error; err != nil {
 		return nil, err
 	}
@@ -142,8 +141,13 @@ func GetActiveStreamByStreamID(streamID string) (*dtos.StreamResponse, error) {
 		IsActive:        stream.IsActive,
 		CreatedAt:       stream.CreatedAt,
 		Messages:        messages,
-		Title:           stream.StreamInfo.Title,
-		CategoryName:    stream.StreamInfo.Category.CategoryName,
+	}
+
+	if stream.StreamInfo != nil {
+		resp.Title = stream.StreamInfo.Title
+		if stream.StreamInfo.Category != nil {
+			resp.CategoryName = stream.StreamInfo.Category.CategoryName
+		}
 	}
 
 	return &resp, nil
