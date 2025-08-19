@@ -29,7 +29,7 @@ func ConnectDB() {
 		log.Fatalf("❌ Failed to connect to database: %v", err)
 	}
 
-	// DB.Migrator().DropTable(&models.User{}, &models.Stream{}, &models.Message{})
+	// DB.Migrator().DropTable(&models.Stream{}, &models.Message{})
 
 	err = DB.AutoMigrate(
 		&models.Category{}, &models.Stream{}, &models.Message{}, &models.StreamHistory{}, &models.ViewerHistory{},

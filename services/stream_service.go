@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"log"
 	"main/database"
 	"main/dtos"
 	"main/helper"
@@ -31,18 +32,18 @@ func UploadThumbnail(fileHeader *multipart.FileHeader, streamID string) (string,
 func CreateStream(req dtos.CreateStreamingRequest) (*dtos.CreateStreamingResponse, error) {
 	streamID := helper.GenerateID()
 
-	publicUrl, err := UploadThumbnail(req.Thumbnail, streamID)
-	if err != nil {
-		return nil, err
+	thumbnailURL, err := UploadThumbnail(req.Thumbnail, streamID)
+	log.Println(thumbnailURL, err)
+	stream := models.Stream{
+		StreamID:        streamID,
+		HostPrincipalID: req.HostPrincipalID,
+		CreatedAt:       time.Now(),
+		ThumbnailURL:    thumbnailURL,
+		IsActive:        true,
 	}
 
-	stream := models.Stream{
-		StreamID:         streamID,
-		HostPrincipalID:  req.HostPrincipalID,
-		Title:            req.Title,
-		Thumbnail:        publicUrl,
-		StreamCategoryID: req.StreamCategoryID,
-		CreatedAt:        time.Now(),
+	if err != nil {
+		stream.ThumbnailURL = thumbnailURL
 	}
 
 	if err := database.DB.Create(&stream).Error; err != nil {
@@ -51,40 +52,38 @@ func CreateStream(req dtos.CreateStreamingRequest) (*dtos.CreateStreamingRespons
 
 	var createdStream models.Stream
 
-	if err := database.DB.Preload("Category").Where("stream_id = ?", stream.StreamID).First(&createdStream).Error; err != nil {
+	if err := database.DB.Preload("StreamInfo").Preload("StreamInfo.Category").Where("stream_id = ?", stream.StreamID).First(&createdStream).Error; err != nil {
 		return nil, err
 	}
 
 	resp := &dtos.CreateStreamingResponse{
-		StreamID:           createdStream.StreamID,
-		HostPrincipalID:    createdStream.HostPrincipalID,
-		Title:              createdStream.Title,
-		Thumbnail:          createdStream.Thumbnail,
-		StreamCategoryName: createdStream.Category.CategoryName,
-		CreatedAt:          createdStream.CreatedAt,
+		StreamID:        createdStream.StreamID,
+		HostPrincipalID: createdStream.HostPrincipalID,
+		CreatedAt:       createdStream.CreatedAt,
+		IsActive:        createdStream.IsActive,
 	}
 
 	return resp, nil
 }
 
-func GetAllActiveStream() ([]dtos.GetActiveAllStreamResponse, error) {
+func GetAllActiveStream() ([]dtos.StreamResponse, error) {
 	var stream []models.Stream
 
 	if err := database.DB.
-		Preload("Category").
+		Preload("StreamInfo").
+		Preload("StreamInfo.Category").
 		Preload("Messages").
 		Where("is_active = ?", true).
 		Find(&stream).Error; err != nil {
 		return nil, err
 	}
 
-	var responses []dtos.GetActiveAllStreamResponse
+	var responses []dtos.StreamResponse
 
 	for _, s := range stream {
-
-		var messages []dtos.MessageAllStreamResponse
+		var messages []dtos.MessageResponse
 		for _, m := range s.Messages {
-			messages = append(messages, dtos.MessageAllStreamResponse{
+			messages = append(messages, dtos.MessageResponse{
 				MessageID: m.MessageID,
 				SenderID:  m.MessagePrincipalID,
 				Content:   m.Content,
@@ -92,36 +91,40 @@ func GetAllActiveStream() ([]dtos.GetActiveAllStreamResponse, error) {
 			})
 		}
 
-		resp := dtos.GetActiveAllStreamResponse{
-			StreamID:                 s.StreamID,
-			HostPrincipalID:          s.HostPrincipalID,
-			Title:                    s.Title,
-			Thumbnail:                s.Thumbnail,
-			CategoryName:             s.Category.CategoryName,
-			IsActive:                 s.IsActive,
-			CreatedAt:                s.CreatedAt,
-			MessageAllStreamResponse: messages,
+		resp := dtos.StreamResponse{
+			StreamID:        s.StreamID,
+			HostPrincipalID: s.HostPrincipalID,
+			ThumbnailURL:    s.ThumbnailURL,
+			IsActive:        s.IsActive,
+			CreatedAt:       s.CreatedAt,
+			Messages:        messages,
 		}
 		responses = append(responses, resp)
+		streamInfo, err := GetStreamInfoByUserID(s.HostPrincipalID)
+		if err == nil {
+			resp.Title = streamInfo.Title
+			resp.CategoryName = streamInfo.Category.CategoryName
+		}
 	}
 
 	return responses, nil
 }
 
-func GetActiveStreamByStreamID(streamID string) (*dtos.GetActiveAllStreamResponse, error) {
+func GetActiveStreamByStreamID(streamID string) (*dtos.StreamResponse, error) {
 	var stream models.Stream
 
 	if err := database.DB.
 		Preload("Category").
 		Preload("Messages").
+		Preload("StreamInfo").
 		Where("is_active = ?", true).
 		First(&stream).Error; err != nil {
 		return nil, err
 	}
 
-	var messages []dtos.MessageAllStreamResponse
+	var messages []dtos.MessageResponse
 	for _, m := range stream.Messages {
-		messages = append(messages, dtos.MessageAllStreamResponse{
+		messages = append(messages, dtos.MessageResponse{
 			MessageID: m.MessageID,
 			SenderID:  m.MessagePrincipalID,
 			Content:   m.Content,
@@ -129,110 +132,97 @@ func GetActiveStreamByStreamID(streamID string) (*dtos.GetActiveAllStreamRespons
 		})
 	}
 
-	resp := dtos.GetActiveAllStreamResponse{
-		StreamID:                 stream.StreamID,
-		HostPrincipalID:          stream.HostPrincipalID,
-		Title:                    stream.Title,
-		Thumbnail:                stream.Thumbnail,
-		CategoryName:             stream.Category.CategoryName,
-		IsActive:                 stream.IsActive,
-		CreatedAt:                stream.CreatedAt,
-		MessageAllStreamResponse: messages,
+	resp := dtos.StreamResponse{
+		StreamID:        stream.StreamID,
+		HostPrincipalID: stream.HostPrincipalID,
+		ThumbnailURL:    stream.ThumbnailURL,
+		IsActive:        stream.IsActive,
+		CreatedAt:       stream.CreatedAt,
+		Messages:        messages,
+		Title:           stream.StreamInfo.Title,
+		CategoryName:    stream.StreamInfo.Category.CategoryName,
 	}
 
 	return &resp, nil
 }
 
-func UpdateStreamActiveStatus(req dtos.UpdateStreamActiveStatusRequest) (*dtos.GetActiveAllStreamResponse, error) {
-
+func StopStream(streamerID string) (*dtos.StreamResponse, error) {
 	var stream models.Stream
 
+	if err := database.DB.Where("host_principal_id = ? AND is_active = ?", streamerID, true).First(&stream).Error; err != nil {
+		return nil, err
+	}
+
+	stream.IsActive = false
+
+	if err := database.DB.Save(&stream).Error; err != nil {
+		return nil, err
+	}
+
 	if err := database.DB.
-		Where("stream_id = ?", req.StreamID).
+		Preload("StreamInfo").
+		Preload("StreamInfo.Category").
+		Where("stream_id = ?", stream.StreamID).
 		First(&stream).Error; err != nil {
 		return nil, err
 	}
 
-	if err := database.DB.
-		Model(&stream).
-		Update("is_active", req.IsActive).Error; err != nil {
-		return nil, err
+	resp := &dtos.StreamResponse{
+		StreamID:        stream.StreamID,
+		HostPrincipalID: stream.HostPrincipalID,
+		ThumbnailURL:    stream.ThumbnailURL,
+		IsActive:        stream.IsActive,
+		CreatedAt:       stream.CreatedAt,
 	}
 
-	if err := database.DB.
-		Preload("Category").
-		Preload("Messages").
-		Where("stream_id = ?", req.StreamID).
-		First(&stream).Error; err != nil {
-		return nil, err
-	}
+	if stream.StreamInfoID != nil {
+		resp.Title = stream.StreamInfo.Title
+		if stream.StreamInfo.StreamCategoryID != nil {
+			resp.CategoryName = stream.StreamInfo.Category.CategoryName
 
-	var messages []dtos.MessageAllStreamResponse
-	for _, m := range stream.Messages {
-		messages = append(messages, dtos.MessageAllStreamResponse{
-			MessageID: m.MessageID,
-			SenderID:  m.MessagePrincipalID,
-			Content:   m.Content,
-			CreatedAt: m.CreatedAt,
-		})
-	}
-
-	resp := dtos.GetActiveAllStreamResponse{
-		StreamID:                 stream.StreamID,
-		HostPrincipalID:          stream.HostPrincipalID,
-		Title:                    stream.Title,
-		Thumbnail:                stream.Thumbnail,
-		CategoryName:             stream.Category.CategoryName,
-		IsActive:                 stream.IsActive,
-		CreatedAt:                stream.CreatedAt,
-		MessageAllStreamResponse: messages,
-	}
-
-	return &resp, nil
-}
-
-func UpdateStream(req dtos.UpdateStreamingRequest) (*dtos.UpdateStreamingResponse, error) {
-	var stream models.Stream
-
-	if err := database.DB.
-		Where("stream_id = ?", req.StreamID).
-		Preload("Category").
-		First(&stream).Error; err != nil {
-		return nil, err
-	}
-
-	publicUrl := stream.Thumbnail
-	if req.Thumbnail != nil {
-		uploadedUrl, err := UploadThumbnail(req.Thumbnail, stream.StreamID)
-		if err != nil {
-			return nil, err
 		}
-		publicUrl = uploadedUrl
-	}
-
-	updateData := map[string]interface{}{
-		"title":              req.Title,
-		"thumbnail":          publicUrl,
-		"stream_category_id": req.StreamCategoryID,
-	}
-
-	if err := database.DB.Model(&stream).Updates(updateData).Error; err != nil {
-		return nil, err
-	}
-
-	if err := database.DB.Preload("Category").
-		First(&stream, "stream_id = ?", req.StreamID).Error; err != nil {
-		return nil, err
-	}
-
-	resp := &dtos.UpdateStreamingResponse{
-		StreamID:           stream.StreamID,
-		HostPrincipalID:    stream.HostPrincipalID,
-		Title:              stream.Title,
-		Thumbnail:          stream.Thumbnail,
-		StreamCategoryName: stream.Category.CategoryName,
-		CreatedAt:          stream.CreatedAt,
 	}
 
 	return resp, nil
+}
+
+func GetActiveStreamByStreamerID(streamerID string) (*dtos.StreamResponse, error) {
+	var stream models.Stream
+
+	if err := database.DB.
+		Preload("Messages").
+		Preload("StreamInfo").
+		Preload("StreamInfo.Category").
+		Where("is_active = ? AND host_principal_id = ?", true, streamerID).
+		First(&stream).Error; err != nil {
+		return nil, err
+	}
+
+	var messages []dtos.MessageResponse
+	for _, m := range stream.Messages {
+		messages = append(messages, dtos.MessageResponse{
+			MessageID: m.MessageID,
+			SenderID:  m.MessagePrincipalID,
+			Content:   m.Content,
+			CreatedAt: m.CreatedAt,
+		})
+	}
+
+	resp := dtos.StreamResponse{
+		StreamID:        stream.StreamID,
+		HostPrincipalID: stream.HostPrincipalID,
+		ThumbnailURL:    stream.ThumbnailURL,
+		IsActive:        stream.IsActive,
+		CreatedAt:       stream.CreatedAt,
+		Messages:        messages,
+	}
+
+	if stream.StreamInfoID != nil {
+		resp.Title = stream.StreamInfo.Title
+		if stream.StreamInfo.StreamCategoryID != nil {
+			resp.CategoryName = stream.StreamInfo.Category.CategoryName
+		}
+	}
+
+	return &resp, nil
 }

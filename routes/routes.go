@@ -29,6 +29,7 @@ func SetUpRoutes() {
 		CategoryRoutes(api)
 		StreamHistoryRoutes(api)
 		ViewerHistoryRoutes(api)
+		StreamInfoRoutes(api)
 	}
 
 	r.Run(":6969")

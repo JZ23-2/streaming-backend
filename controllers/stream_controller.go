@@ -29,9 +29,6 @@ func CreateStreamController(c *gin.Context) {
 	var req dtos.CreateStreamingRequest
 
 	req.HostPrincipalID = c.PostForm("hostPrincipalId")
-	req.Title = c.PostForm("title")
-	req.StreamCategoryID = c.PostForm("streamCategoryId")
-
 	file, err := c.FormFile("thumbnail")
 	if err != nil {
 		utils.FailedResponse(c, http.StatusBadRequest, "thumbnail file is required")
@@ -42,7 +39,7 @@ func CreateStreamController(c *gin.Context) {
 	resp, err := services.CreateStream(req)
 	if err != nil {
 		log.Println(err)
-		utils.FailedResponse(c, http.StatusConflict, "failed to create stream: ")
+		utils.FailedResponse(c, http.StatusConflict, "failed to create stream ")
 		return
 	}
 
@@ -55,7 +52,7 @@ func CreateStreamController(c *gin.Context) {
 // @Tags         Stream
 // @Accept       json
 // @Produce      json
-// @Success      200   {object}  []dtos.GetActiveAllStreamResponse
+// @Success      200   {object}  []dtos.StreamResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      409   {object}  map[string]string
 // @Failure      500   {object}  map[string]string
@@ -83,7 +80,7 @@ func GetAllActiveStreamController(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        streamID query string true "Stream ID"
-// @Success      200   {object}  dtos.GetActiveAllStreamResponse
+// @Success      200   {object}  dtos.StreamResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      409   {object}  map[string]string
 // @Failure      500   {object}  map[string]string
@@ -106,19 +103,19 @@ func GetActiveStreamByStreamIDController(c *gin.Context) {
 	utils.SuccessResponse(c, 200, "active stream found", resp)
 }
 
-// UpdateStreamActiveStatus godoc
-// @Summary      Update stream active status
-// @Description  Update stream active status
+// StopActiveStream godoc
+// @Summary      Stop active stream
+// @Description  Stop active stream
 // @Tags         Stream
 // @Accept       json
 // @Produce      json
-// @Param        UpdateStream body dtos.UpdateStreamActiveStatusRequest true "Update Stream"
-// @Success      200   {object}  dtos.GetActiveAllStreamResponse
+// @Param        dto body dtos.UpdateStreamActiveStatusRequest true "DTO"
+// @Success      200   {object}  dtos.StreamResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      409   {object}  map[string]string
 // @Failure      500   {object}  map[string]string
-// @Router       /streams/update-active-status [patch]
-func UpdateStreamActiveStatusController(c *gin.Context) {
+// @Router       /streams/stop-stream [post]
+func StopActiveStream(c *gin.Context) {
 	var req dtos.UpdateStreamActiveStatusRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -126,51 +123,12 @@ func UpdateStreamActiveStatusController(c *gin.Context) {
 		return
 	}
 
-	resp, err := services.UpdateStreamActiveStatus(req)
+	resp, err := services.StopStream(req.HostPrincipalID)
 
 	if err != nil {
-		utils.FailedResponse(c, http.StatusConflict, "update went wrong")
+		utils.FailedResponse(c, http.StatusInternalServerError, "an error occurred while updating stream status")
 		return
 	}
 
-	utils.SuccessResponse(c, 200, "update success", resp)
-}
-
-// UpdateStream godoc
-// @Summary      Update Stream
-// @Description  Update Stream
-// @Tags         Stream
-// @Accept       multipart/form-data
-// @Produce      json
-// @Param        streamId  		  formData  string true  "Stream ID"
-// @Param        title            formData  string true  "Stream title"
-// @Param        streamCategoryId formData  string true  "Stream Category ID"
-// @Param        thumbnail        formData  file   false  "Thumbnail file"
-// @Success      200 {object} dtos.UpdateStreamingResponse
-// @Failure      400 {object} map[string]string
-// @Failure      409 {object} map[string]string
-// @Failure      500 {object} map[string]string
-// @Router       /streams/update-stream [patch]
-func UpdateStreamController(c *gin.Context) {
-	var req dtos.UpdateStreamingRequest
-
-	req.StreamID = c.PostForm("streamId")
-	req.Title = c.PostForm("title")
-	req.StreamCategoryID = c.PostForm("streamCategoryId")
-
-	file, err := c.FormFile("thumbnail")
-	if err == nil {
-		req.Thumbnail = file
-	} else {
-		req.Thumbnail = nil
-	}
-
-	resp, err := services.UpdateStream(req)
-	if err != nil {
-		log.Println(err)
-		utils.FailedResponse(c, http.StatusConflict, "failed to update stream")
-		return
-	}
-
-	utils.SuccessResponse(c, http.StatusOK, "stream updated", resp)
+	utils.SuccessResponse(c, http.StatusOK, "update success", resp)
 }

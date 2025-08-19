@@ -6,10 +6,8 @@ import (
 )
 
 type CreateStreamingRequest struct {
-	HostPrincipalID  string                `json:"hostPrincipalId" example:"nigger 123"`
-	Title            string                `json:"title" example:"nigger show"`
-	Thumbnail        *multipart.FileHeader `form:"thumbnail" swaggerignore:"false"`
-	StreamCategoryID string                `json:"streamCategoryId" example:"nigger category"`
+	HostPrincipalID string                `json:"hostPrincipalId" example:"123"`
+	Thumbnail       *multipart.FileHeader `json:"thumbnail" swaggerignore:"false"`
 }
 
 type CreateStreamingResponse struct {
@@ -19,4 +17,5 @@ type CreateStreamingResponse struct {
 	Thumbnail          string    `form:"thumbnail"`
 	StreamCategoryName string    `json:"streamCategoryName"`
 	CreatedAt          time.Time `json:"createAt"`
+	IsActive           bool      `json:"isActive"`
 }

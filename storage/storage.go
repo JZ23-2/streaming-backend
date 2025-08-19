@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 )
@@ -22,7 +23,7 @@ func Init() {
 
 func UploadFileFromReader(reader io.Reader, destPath string, contentType string) (string, error) {
 	url := fmt.Sprintf("%s/storage/v1/object/%s/%s", SUPABASE_URL, BUCKET_NAME, destPath)
-
+	log.Println("url:", url)
 	req, err := http.NewRequest("POST", url, reader)
 	if err != nil {
 		return "", err

@@ -10,6 +10,12 @@ import (
 func CreateStreamHistory(req dtos.CreateStreamHistoryRequest) (*dtos.CreateStreamHistoryResponse, error) {
 	streamHistoryID := helper.GenerateID()
 
+	stream, err := GetActiveStreamByStreamerID(req.HostPrincipalID)
+
+	if err != nil {
+		return nil, err
+	}
+
 	duration, err := helper.GetVideoDurationFromURL(req.VideoUrl)
 
 	if err != nil {
@@ -18,7 +24,7 @@ func CreateStreamHistory(req dtos.CreateStreamHistoryRequest) (*dtos.CreateStrea
 
 	streamHistory := models.StreamHistory{
 		StreamHistoryID:       streamHistoryID,
-		StreamHistoryStreamID: req.StreamHistoryStreamID,
+		StreamHistoryStreamID: stream.StreamID,
 		HostPrincipalID:       req.HostPrincipalID,
 		VideoUrl:              req.VideoUrl,
 		Duration:              int(duration),
@@ -45,6 +51,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 	if err := database.DB.
 		Preload("Stream.Category").
 		Preload("Stream.Messages").
+		Preload("Stream.StreamInfo").
 		Where("host_principal_id = ?", hostPrincipalID).
 		Find(&streamHistories).Error; err != nil {
 		return nil, err
@@ -53,9 +60,9 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 	var responses []dtos.GetAllStreamHistoryResponse
 	for _, s := range streamHistories {
 
-		var messages []dtos.MessageAllStreamResponse
+		var messages []dtos.MessageResponse
 		for _, m := range s.Stream.Messages {
-			messages = append(messages, dtos.MessageAllStreamResponse{
+			messages = append(messages, dtos.MessageResponse{
 				MessageID: m.MessageID,
 				SenderID:  m.MessagePrincipalID,
 				Content:   m.Content,
@@ -69,16 +76,16 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.GetAllStrea
 			Count(&totalViews)
 
 		resp := dtos.GetAllStreamHistoryResponse{
-			StreamHistoryID:          s.StreamHistoryID,
-			StreamHistoryStreamID:    s.StreamHistoryStreamID,
-			HostPrincipalID:          s.HostPrincipalID,
-			VideoUrl:                 s.VideoUrl,
-			Duration:                 s.Duration,
-			Title:                    s.Stream.Title,
-			Thumbnail:                s.Stream.Thumbnail,
-			CategoryName:             s.Stream.Category.CategoryName,
-			MessageAllStreamResponse: messages,
-			TotalView:                int(totalViews),
+			StreamHistoryID:       s.StreamHistoryID,
+			StreamHistoryStreamID: s.StreamHistoryStreamID,
+			HostPrincipalID:       s.HostPrincipalID,
+			VideoUrl:              s.VideoUrl,
+			Duration:              s.Duration,
+			Title:                 s.Stream.StreamInfo.Title,
+			Thumbnail:             s.Stream.ThumbnailURL,
+			CategoryName:          &s.Stream.StreamInfo.Category.CategoryName,
+			MessageResponse:       messages,
+			TotalView:             int(totalViews),
 		}
 		responses = append(responses, resp)
 	}
@@ -92,14 +99,15 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryR
 	if err := database.DB.
 		Preload("Stream.Category").
 		Preload("Stream.Messages").
+		Preload("Stream.StreamInfo").
 		Where("stream_history_id = ?", streamHistoryID).
 		First(&streamHistory).Error; err != nil {
 		return nil, err
 	}
 
-	var messages []dtos.MessageAllStreamResponse
+	var messages []dtos.MessageResponse
 	for _, m := range streamHistory.Stream.Messages {
-		messages = append(messages, dtos.MessageAllStreamResponse{
+		messages = append(messages, dtos.MessageResponse{
 			MessageID: m.MessageID,
 			SenderID:  m.MessagePrincipalID,
 			Content:   m.Content,
@@ -113,16 +121,16 @@ func GetAllStreamHistoryByID(streamHistoryID string) (*dtos.GetAllStreamHistoryR
 		Count(&totalViews)
 
 	resp := &dtos.GetAllStreamHistoryResponse{
-		StreamHistoryID:          streamHistory.StreamHistoryID,
-		StreamHistoryStreamID:    streamHistory.StreamHistoryStreamID,
-		HostPrincipalID:          streamHistory.HostPrincipalID,
-		VideoUrl:                 streamHistory.VideoUrl,
-		Duration:                 streamHistory.Duration,
-		Title:                    streamHistory.Stream.Title,
-		Thumbnail:                streamHistory.Stream.Thumbnail,
-		CategoryName:             streamHistory.Stream.Category.CategoryName,
-		MessageAllStreamResponse: messages,
-		TotalView:                int(totalViews),
+		StreamHistoryID:       streamHistory.StreamHistoryID,
+		StreamHistoryStreamID: streamHistory.StreamHistoryStreamID,
+		HostPrincipalID:       streamHistory.HostPrincipalID,
+		VideoUrl:              streamHistory.VideoUrl,
+		Duration:              streamHistory.Duration,
+		Title:                 streamHistory.Stream.StreamInfo.Title,
+		Thumbnail:             streamHistory.Stream.ThumbnailURL,
+		CategoryName:          &streamHistory.Stream.StreamInfo.Category.CategoryName,
+		MessageResponse:       messages,
+		TotalView:             int(totalViews),
 	}
 
 	return resp, nil

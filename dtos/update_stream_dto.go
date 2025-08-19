@@ -6,8 +6,7 @@ import (
 )
 
 type UpdateStreamActiveStatusRequest struct {
-	StreamID string `json:"streamID" example:"stream123"`
-	IsActive bool   `json:"isActive" example:"true"`
+	HostPrincipalID string `json:"hostPrincipalId" example:"stream123"`
 }
 
 type UpdateStreamingRequest struct {

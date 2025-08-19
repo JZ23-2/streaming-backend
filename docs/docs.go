@@ -349,6 +349,126 @@ const docTemplate = `{
                 }
             }
         },
+        "/stream-info/": {
+            "put": {
+                "description": "Create or update stream info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "StreamInfo"
+                ],
+                "summary": "Create or update stream info",
+                "parameters": [
+                    {
+                        "description": "DTO",
+                        "name": "dto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateStreamInfoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stream-info/{hostPrincipalID}": {
+            "get": {
+                "description": "get stream info by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "StreamInfo"
+                ],
+                "summary": "get stream info by user id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Host Principal ID",
+                        "name": "hostPrincipalID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.StreamInfoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/streams/all-active-stream": {
             "get": {
                 "description": "Get all active stream",
@@ -368,7 +488,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dtos.GetActiveAllStreamResponse"
+                                "$ref": "#/definitions/dtos.StreamResponse"
                             }
                         }
                     },
@@ -428,7 +548,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dtos.GetActiveAllStreamResponse"
+                            "$ref": "#/definitions/dtos.StreamResponse"
                         }
                     },
                     "400": {
@@ -541,9 +661,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/streams/update-active-status": {
-            "patch": {
-                "description": "Update stream active status",
+        "/streams/stop-stream": {
+            "post": {
+                "description": "Stop active stream",
                 "consumes": [
                     "application/json"
                 ],
@@ -553,11 +673,11 @@ const docTemplate = `{
                 "tags": [
                     "Stream"
                 ],
-                "summary": "Update stream active status",
+                "summary": "Stop active stream",
                 "parameters": [
                     {
-                        "description": "Update Stream",
-                        "name": "UpdateStream",
+                        "description": "DTO",
+                        "name": "dto",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -569,86 +689,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dtos.GetActiveAllStreamResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/streams/update-stream": {
-            "patch": {
-                "description": "Update Stream",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Stream"
-                ],
-                "summary": "Update Stream",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Stream ID",
-                        "name": "streamId",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Stream title",
-                        "name": "title",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Stream Category ID",
-                        "name": "streamCategoryId",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "file",
-                        "description": "Thumbnail file",
-                        "name": "thumbnail",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dtos.UpdateStreamingResponse"
+                            "$ref": "#/definitions/dtos.StreamResponse"
                         }
                     },
                     "400": {
@@ -790,6 +831,23 @@ const docTemplate = `{
                 }
             }
         },
+        "dtos.CreateStreamInfoRequest": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "string",
+                    "example": "123"
+                },
+                "hostPrincipalId": {
+                    "type": "string",
+                    "example": "123"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "My First Stream!!"
+                }
+            }
+        },
         "dtos.CreateStreamingResponse": {
             "type": "object",
             "properties": {
@@ -798,6 +856,9 @@ const docTemplate = `{
                 },
                 "hostPrincipalId": {
                     "type": "string"
+                },
+                "isActive": {
+                    "type": "boolean"
                 },
                 "streamCategoryName": {
                     "type": "string"
@@ -840,38 +901,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.GetActiveAllStreamResponse": {
-            "type": "object",
-            "properties": {
-                "categoryName": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "hostPrincipalID": {
-                    "type": "string"
-                },
-                "isActive": {
-                    "type": "boolean"
-                },
-                "messages": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dtos.MessageAllStreamResponse"
-                    }
-                },
-                "streamId": {
-                    "type": "string"
-                },
-                "thumbnail": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
         "dtos.GetAllStreamHistoryResponse": {
             "type": "object",
             "properties": {
@@ -887,7 +916,7 @@ const docTemplate = `{
                 "messages": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dtos.MessageAllStreamResponse"
+                        "$ref": "#/definitions/dtos.MessageResponse"
                     }
                 },
                 "streamHistoryID": {
@@ -910,7 +939,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.MessageAllStreamResponse": {
+        "dtos.MessageResponse": {
             "type": "object",
             "properties": {
                 "content": {
@@ -927,39 +956,61 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.UpdateStreamActiveStatusRequest": {
+        "dtos.StreamInfoResponse": {
             "type": "object",
             "properties": {
-                "isActive": {
-                    "type": "boolean",
-                    "example": true
-                },
-                "streamID": {
-                    "type": "string",
-                    "example": "stream123"
-                }
-            }
-        },
-        "dtos.UpdateStreamingResponse": {
-            "type": "object",
-            "properties": {
-                "createAt": {
+                "categoryName": {
                     "type": "string"
                 },
                 "hostPrincipalId": {
                     "type": "string"
                 },
-                "streamCategoryName": {
+                "title": {
                     "type": "string"
+                }
+            }
+        },
+        "dtos.StreamResponse": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "hostPrincipalID": {
+                    "type": "string"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.MessageResponse"
+                    }
                 },
                 "streamId": {
                     "type": "string"
                 },
-                "thumbnail": {
+                "thumbnailURL": {
                     "type": "string"
                 },
                 "title": {
                     "type": "string"
+                },
+                "viewerCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dtos.UpdateStreamActiveStatusRequest": {
+            "type": "object",
+            "properties": {
+                "hostPrincipalID": {
+                    "type": "string",
+                    "example": "stream123"
                 }
             }
         },
