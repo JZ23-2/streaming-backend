@@ -67,8 +67,8 @@ func HandleStartStream(c *gin.Context) {
 			err := conn.WriteJSON(map[string]interface{}{
 				"type": "stream_started",
 				"data": map[string]string{
-					"stream_id":   streamMsg.StreamID,
-					"streamer_id": streamMsg.StreamerID,
+					"streamId":   streamMsg.StreamID,
+					"streamerId": streamMsg.StreamerID,
 				},
 			})
 
