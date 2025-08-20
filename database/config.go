@@ -38,11 +38,17 @@ func ConnectDB() {
 		log.Fatalf("Migration failed: %v", err)
 	}
 
-	err = SeedStreamingCategories()
+	// Dijalanin kalau diperlukan dan cek database dulu ya nak
+	// err = SeedStreamingCategories() //dijalanin kalau perlu saja
+	// err = SeedStreamInfos(100) //dijalanin kalau perlu saja
+	// err = SeedStreams(100)
+	// err = SeedStreamHistories(100)
+	// err = SeedViewerHistories()
+	// err = SeedMessages()
 
-	if err != nil {
-		log.Fatalln("failed to seed category")
-	}
+	// if err != nil {
+	// 	log.Fatalln("failed to seed")
+	// }
 
 	log.Println("Connected to Supabase PostgreSQL successfully!")
 }
