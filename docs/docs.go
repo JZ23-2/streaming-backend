@@ -195,7 +195,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dtos.GetAllStreamHistoryResponse"
+                                "$ref": "#/definitions/dtos.StreamHistoryResponse"
                             }
                         }
                     },
@@ -255,7 +255,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dtos.GetAllStreamHistoryResponse"
+                            "$ref": "#/definitions/dtos.StreamHistoryResponse"
                         }
                     },
                     "400": {
@@ -849,7 +849,7 @@ const docTemplate = `{
             "properties": {
                 "categoryName": {
                     "type": "string",
-                    "example": "nigger comedy"
+                    "example": "RPG"
                 }
             }
         },
@@ -956,10 +956,30 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.GetAllStreamHistoryResponse": {
+        "dtos.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "messageID": {
+                    "type": "string"
+                },
+                "senderID": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.StreamHistoryResponse": {
             "type": "object",
             "properties": {
                 "categoryName": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "duration": {
@@ -994,27 +1014,10 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.MessageResponse": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "messageID": {
-                    "type": "string"
-                },
-                "senderID": {
-                    "type": "string"
-                }
-            }
-        },
         "dtos.StreamInfoResponse": {
             "type": "object",
             "properties": {
-                "categoryName": {
+                "categoryId": {
                     "type": "string"
                 },
                 "hostPrincipalId": {

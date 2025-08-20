@@ -188,7 +188,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dtos.GetAllStreamHistoryResponse"
+                                "$ref": "#/definitions/dtos.StreamHistoryResponse"
                             }
                         }
                     },
@@ -248,7 +248,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dtos.GetAllStreamHistoryResponse"
+                            "$ref": "#/definitions/dtos.StreamHistoryResponse"
                         }
                     },
                     "400": {
@@ -842,7 +842,7 @@
             "properties": {
                 "categoryName": {
                     "type": "string",
-                    "example": "nigger comedy"
+                    "example": "RPG"
                 }
             }
         },
@@ -949,10 +949,30 @@
                 }
             }
         },
-        "dtos.GetAllStreamHistoryResponse": {
+        "dtos.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "messageID": {
+                    "type": "string"
+                },
+                "senderID": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.StreamHistoryResponse": {
             "type": "object",
             "properties": {
                 "categoryName": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "duration": {
@@ -987,27 +1007,10 @@
                 }
             }
         },
-        "dtos.MessageResponse": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "messageID": {
-                    "type": "string"
-                },
-                "senderID": {
-                    "type": "string"
-                }
-            }
-        },
         "dtos.StreamInfoResponse": {
             "type": "object",
             "properties": {
-                "categoryName": {
+                "categoryId": {
                     "type": "string"
                 },
                 "hostPrincipalId": {

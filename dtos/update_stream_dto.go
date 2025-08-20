@@ -11,9 +11,9 @@ type UpdateStreamActiveStatusRequest struct {
 
 type UpdateStreamingRequest struct {
 	StreamID         string                `json:"streamId" example:"stream 123"`
-	Title            string                `json:"title" example:"nigger show"`
+	Title            string                `json:"title" example:"RPG show"`
 	Thumbnail        *multipart.FileHeader `form:"thumbnail" swaggerignore:"false"`
-	StreamCategoryID string                `json:"streamCategoryId" example:"nigger category"`
+	StreamCategoryID string                `json:"streamCategoryId" example:"RPG category"`
 }
 
 type UpdateStreamingResponse struct {

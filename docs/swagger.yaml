@@ -3,7 +3,7 @@ definitions:
   dtos.CreateCategoryRequest:
     properties:
       categoryName:
-        example: nigger comedy
+        example: RPG
         type: string
     type: object
   dtos.CreateStreamHistoryRequest:
@@ -75,9 +75,22 @@ definitions:
       viewerHistoryStreamHistoryID:
         type: string
     type: object
-  dtos.GetAllStreamHistoryResponse:
+  dtos.MessageResponse:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      messageID:
+        type: string
+      senderID:
+        type: string
+    type: object
+  dtos.StreamHistoryResponse:
     properties:
       categoryName:
+        type: string
+      createdAt:
         type: string
       duration:
         type: integer
@@ -100,20 +113,9 @@ definitions:
       videoUrl:
         type: string
     type: object
-  dtos.MessageResponse:
-    properties:
-      content:
-        type: string
-      createdAt:
-        type: string
-      messageID:
-        type: string
-      senderID:
-        type: string
-    type: object
   dtos.StreamInfoResponse:
     properties:
-      categoryName:
+      categoryId:
         type: string
       hostPrincipalId:
         type: string
@@ -293,7 +295,7 @@ paths:
           description: Created
           schema:
             items:
-              $ref: '#/definitions/dtos.GetAllStreamHistoryResponse'
+              $ref: '#/definitions/dtos.StreamHistoryResponse'
             type: array
         "400":
           description: Bad Request
@@ -333,7 +335,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dtos.GetAllStreamHistoryResponse'
+            $ref: '#/definitions/dtos.StreamHistoryResponse'
         "400":
           description: Bad Request
           schema:

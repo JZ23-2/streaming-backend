@@ -51,7 +51,7 @@ func CreateStreamHistoryController(c *gin.Context) {
 //
 //	@Param			hostPrincipalID	query		string	true	"Host Principal ID"
 //
-// @Success      201   {object}  []dtos.GetAllStreamHistoryResponse
+// @Success      201   {object}  []dtos.StreamHistoryResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      409   {object}  map[string]string
 // @Failure      500   {object}  map[string]string
@@ -78,7 +78,7 @@ func GetAllStreamHistoryByStreamerIDController(c *gin.Context) {
 //
 //	@Param			streamHistoryID	query		string	true	"Stream History ID"
 //
-// @Success      201   {object}  dtos.GetAllStreamHistoryResponse
+// @Success      201   {object}  dtos.StreamHistoryResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      409   {object}  map[string]string
 // @Failure      500   {object}  map[string]string
