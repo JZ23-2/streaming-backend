@@ -14,7 +14,7 @@ var DB *gorm.DB
 func ConnectDB() {
 	dsn := os.Getenv("SUPABASE_DB_URL")
 	if dsn == "" {
-		log.Fatal("❌ SUPABASE_DB_URL is not set in environment variables")
+		log.Fatal("SUPABASE_DB_URL is not set in environment variables")
 	}
 
 	var err error
@@ -26,7 +26,7 @@ func ConnectDB() {
 	})
 
 	if err != nil {
-		log.Fatalf("❌ Failed to connect to database: %v", err)
+		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
 	// DB.Migrator().DropTable(&models.Stream{}, &models.Message{})
@@ -35,8 +35,14 @@ func ConnectDB() {
 		&models.Category{}, &models.Stream{}, &models.Message{}, &models.StreamHistory{}, &models.ViewerHistory{},
 	)
 	if err != nil {
-		log.Fatalf("❌ Migration failed: %v", err)
+		log.Fatalf("Migration failed: %v", err)
 	}
 
-	log.Println("✅ Connected to Supabase PostgreSQL successfully!")
+	err = SeedStreamingCategories()
+
+	if err != nil {
+		log.Fatalln("failed to seed category")
+	}
+
+	log.Println("Connected to Supabase PostgreSQL successfully!")
 }
