@@ -10,5 +10,6 @@ func Highlight(api *gin.RouterGroup) {
 	Highlight := api.Group("/highlight")
 	{
 		Highlight.POST("/create", controllers.CreateHighlightController)
+		Highlight.GET("/by-streamer-id", controllers.GetAllHighlightByStreamerIDController)
 	}
 }

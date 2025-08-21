@@ -38,3 +38,33 @@ func CreateHighlightController(c *gin.Context) {
 
 	utils.SuccessResponse(c, 201, "highlight created", resp)
 }
+
+// GetHighlightByStreamerID godoc
+// @Summary      Get Highlight by StreamerID
+// @Description  Get Highlight by StreamerID
+// @Tags         Video Highlight
+// @Accept       json
+// @Produce      json
+// @Param        streamerID query string true "Streamer ID"
+// @Success      200   {object}  dtos.CreateHighlightResponse
+// @Failure      400   {object}  map[string]string
+// @Failure      409   {object}  map[string]string
+// @Failure      500   {object}  map[string]string
+// @Router       /highlight/by-streamer-id [get]
+func GetAllHighlightByStreamerIDController(c *gin.Context) {
+	streamerID := c.Query("streamerID")
+
+	if streamerID == "" {
+		utils.FailedResponse(c, http.StatusBadRequest, "invalid request")
+		return
+	}
+
+	resp, err := services.GetAllHighlightByStreamerID(streamerID)
+
+	if err != nil {
+		utils.FailedResponse(c, http.StatusInternalServerError, "failed to retrieve highlight")
+		return
+	}
+
+	utils.SuccessResponse(c, 200, "retrieved highlight success", resp)
+}

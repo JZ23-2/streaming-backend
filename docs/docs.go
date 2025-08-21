@@ -117,6 +117,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/highlight/by-streamer-id": {
+            "get": {
+                "description": "Get Highlight by StreamerID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Video Highlight"
+                ],
+                "summary": "Get Highlight by StreamerID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Streamer ID",
+                        "name": "streamerID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateHighlightResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/highlight/create": {
             "post": {
                 "description": "Create Video Highlight",
@@ -1234,6 +1293,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "streamID": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

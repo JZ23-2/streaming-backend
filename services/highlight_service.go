@@ -42,3 +42,35 @@ func CreateHighlight(req dtos.CreateHighlightRequest) (*dtos.CreateHighlightResp
 
 	return resp, nil
 }
+
+func GetAllHighlightByStreamerID(streamerID string) (*dtos.CreateHighlightResponse, error) {
+	var highlights []models.Highlight
+
+	err := database.DB.
+		Joins("JOIN stream_histories ON stream_histories.stream_history_id = highlights.highlight_stream_history_id").
+		Where("stream_histories.host_principal_id = ?", streamerID).
+		Preload("StreamHistory").
+		Find(&highlights).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	var responses []dtos.ClipResponse
+	for _, h := range highlights {
+		responses = append(responses, dtos.ClipResponse{
+			HighlightID:              h.HighlightID,
+			HighlightStreamHistoryID: h.HighlightStreamHistoryID,
+			HighlightUrl:             h.HighlightUrl,
+			StartHighlight:           h.StartHighlight,
+			EndHighlight:             h.EndHighlight,
+			HighlightDescription:     h.HighlightDescription,
+		})
+	}
+
+	resp := &dtos.CreateHighlightResponse{
+		Highlights: responses,
+	}
+
+	return resp, nil
+}
