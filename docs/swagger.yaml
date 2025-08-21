@@ -1,15 +1,65 @@
 basePath: /api/v1
 definitions:
+  dtos.ClipRequest:
+    properties:
+      endHighlight:
+        example: "0.5"
+        type: string
+      highlightDescription:
+        example: hello world
+        type: string
+      highlightStreamHistoryID:
+        example: streamhistory123
+        type: string
+      highlightUrl:
+        example: url123
+        type: string
+      startHighlight:
+        example: "0.0"
+        type: string
+    type: object
+  dtos.ClipResponse:
+    properties:
+      endHighlight:
+        type: string
+      highlightDescription:
+        type: string
+      highlightID:
+        type: string
+      highlightStreamHistoryID:
+        type: string
+      highlightUrl:
+        type: string
+      startHighlight:
+        type: string
+    type: object
   dtos.CreateCategoryRequest:
     properties:
       categoryName:
         example: RPG
         type: string
     type: object
+  dtos.CreateHighlightRequest:
+    properties:
+      clips:
+        items:
+          $ref: '#/definitions/dtos.ClipRequest'
+        type: array
+    type: object
+  dtos.CreateHighlightResponse:
+    properties:
+      highlights:
+        items:
+          $ref: '#/definitions/dtos.ClipResponse'
+        type: array
+    type: object
   dtos.CreateStreamHistoryRequest:
     properties:
       hostPrincipalID:
         example: user123
+        type: string
+      streamID:
+        example: stream123
         type: string
       videoUrl:
         example: supabase storage video
@@ -244,6 +294,46 @@ paths:
       summary: Get all categories
       tags:
       - Category
+  /highlight/create:
+    post:
+      consumes:
+      - application/json
+      description: Create Video Highlight
+      parameters:
+      - description: highlight
+        in: body
+        name: highlight
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateHighlightRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.CreateHighlightResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Video Highlight
+      tags:
+      - Video Highlight
   /messages/{stream_id}:
     get:
       description: Retrieve all chat messages by Stream ID

@@ -21,14 +21,15 @@ func ModerateMessage(text string) (string, error) {
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
-		return "", err
+		return text, nil
 	}
 	defer resp.Body.Close()
 
 	var result dtos.ModerationResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", err
+		return text, nil
 	}
+
 	if result.IsInappropriate {
 		return "message was inappropriate word", nil
 	}

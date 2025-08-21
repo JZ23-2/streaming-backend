@@ -117,6 +117,67 @@ const docTemplate = `{
                 }
             }
         },
+        "/highlight/create": {
+            "post": {
+                "description": "Create Video Highlight",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Video Highlight"
+                ],
+                "summary": "Create Video Highlight",
+                "parameters": [
+                    {
+                        "description": "highlight",
+                        "name": "highlight",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateHighlightRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateHighlightResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/messages/{stream_id}": {
             "get": {
                 "description": "Retrieve all chat messages by Stream ID",
@@ -844,6 +905,54 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dtos.ClipRequest": {
+            "type": "object",
+            "properties": {
+                "endHighlight": {
+                    "type": "string",
+                    "example": "0.5"
+                },
+                "highlightDescription": {
+                    "type": "string",
+                    "example": "hello world"
+                },
+                "highlightStreamHistoryID": {
+                    "type": "string",
+                    "example": "streamhistory123"
+                },
+                "highlightUrl": {
+                    "type": "string",
+                    "example": "url123"
+                },
+                "startHighlight": {
+                    "type": "string",
+                    "example": "0.0"
+                }
+            }
+        },
+        "dtos.ClipResponse": {
+            "type": "object",
+            "properties": {
+                "endHighlight": {
+                    "type": "string"
+                },
+                "highlightDescription": {
+                    "type": "string"
+                },
+                "highlightID": {
+                    "type": "string"
+                },
+                "highlightStreamHistoryID": {
+                    "type": "string"
+                },
+                "highlightUrl": {
+                    "type": "string"
+                },
+                "startHighlight": {
+                    "type": "string"
+                }
+            }
+        },
         "dtos.CreateCategoryRequest": {
             "type": "object",
             "properties": {
@@ -853,12 +962,38 @@ const docTemplate = `{
                 }
             }
         },
+        "dtos.CreateHighlightRequest": {
+            "type": "object",
+            "properties": {
+                "clips": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.ClipRequest"
+                    }
+                }
+            }
+        },
+        "dtos.CreateHighlightResponse": {
+            "type": "object",
+            "properties": {
+                "highlights": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.ClipResponse"
+                    }
+                }
+            }
+        },
         "dtos.CreateStreamHistoryRequest": {
             "type": "object",
             "properties": {
                 "hostPrincipalID": {
                     "type": "string",
                     "example": "user123"
+                },
+                "streamID": {
+                    "type": "string",
+                    "example": "stream123"
                 },
                 "videoUrl": {
                     "type": "string",
