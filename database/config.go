@@ -32,7 +32,7 @@ func ConnectDB() {
 	// DB.Migrator().DropTable(&models.Stream{}, &models.Message{})
 
 	err = DB.AutoMigrate(
-		&models.Category{}, &models.Stream{}, &models.Message{}, &models.StreamHistory{}, &models.ViewerHistory{},
+		&models.Category{}, &models.Stream{}, &models.Message{}, &models.StreamHistory{}, &models.ViewerHistory{}, &models.Highlight{},
 	)
 	if err != nil {
 		log.Fatalf("Migration failed: %v", err)
@@ -46,9 +46,9 @@ func ConnectDB() {
 	// err = SeedViewerHistories()
 	// err = SeedMessages()
 
-	// if err != nil {
-	// 	log.Fatalln("failed to seed")
-	// }
+	if err != nil {
+		log.Fatalln("failed to seed")
+	}
 
 	log.Println("Connected to Supabase PostgreSQL successfully!")
 }

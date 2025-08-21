@@ -58,15 +58,11 @@ func handleChatMessage(streamID string, data interface{}) {
 	var chatMsg dtos.ChatMessage
 
 	if err := mapstructure.Decode(data, &chatMsg); err != nil {
-		log.Println("Decode error: ", err)
+		log.Println("Decode error:", err)
 		return
 	}
 
-	filteredText, err := services.ModerateMessage(chatMsg.Content)
-	if err != nil {
-		log.Println("AI moderation error:", err)
-		return
-	}
+	filteredText, _ := services.ModerateMessage(chatMsg.Content)
 
 	chatMsg.Content = filteredText
 	chatMsg.StreamID = streamID
@@ -77,7 +73,7 @@ func handleMessages() {
 	for {
 		msg := <-broadcast
 
-		if err := services.SaveMessage(msg.StreamID, msg.UserID, msg.Content); err != nil {
+		if err := services.SaveMessage(msg.StreamID, msg.UserID, msg.Username, msg.Content); err != nil {
 			log.Println("Error saving message: ", err)
 		}
 

@@ -7,12 +7,13 @@ import (
 	"time"
 )
 
-func SaveMessage(streamID, userID, content string) error {
+func SaveMessage(streamID, userID, username, content string) error {
 	message := models.Message{
 		MessageID:          helper.GenerateID(),
 		StreamID:           streamID,
 		MessagePrincipalID: userID,
 		Content:            content,
+		Username:           username,
 		CreatedAt:          time.Now(),
 	}
 
