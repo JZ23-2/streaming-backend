@@ -10,7 +10,7 @@ import (
 func CreateStreamHistory(req dtos.CreateStreamHistoryRequest) (*dtos.CreateStreamHistoryResponse, error) {
 	streamHistoryID := helper.GenerateID()
 
-	stream, err := GetActiveStreamByStreamerID(req.HostPrincipalID)
+	stream, err := GetStreamByID(req.StreamID)
 
 	if err != nil {
 		return nil, err

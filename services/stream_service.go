@@ -207,3 +207,18 @@ func GetActiveStreamByStreamerID(streamerID string) (*models.Stream, error) {
 
 	return &stream, nil
 }
+
+func GetStreamByID(streamID string) (*models.Stream, error) {
+	var stream models.Stream
+
+	if err := database.DB.
+		Preload("Messages").
+		Preload("StreamInfo").
+		Preload("StreamInfo.Category").
+		Where("stream_id = ?", streamID).
+		First(&stream).Error; err != nil {
+		return nil, err
+	}
+
+	return &stream, nil
+}
