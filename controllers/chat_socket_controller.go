@@ -61,6 +61,14 @@ func handleChatMessage(streamID string, data interface{}) {
 		log.Println("Decode error: ", err)
 		return
 	}
+
+	filteredText, err := services.ModerateMessage(chatMsg.Content)
+	if err != nil {
+		log.Println("AI moderation error:", err)
+		return
+	}
+
+	chatMsg.Content = filteredText
 	chatMsg.StreamID = streamID
 	broadcast <- chatMsg
 }
