@@ -5,6 +5,7 @@ import (
 	"main/database"
 	_ "main/docs"
 	"main/routes"
+	"main/services"
 	"main/storage"
 )
 
@@ -18,6 +19,7 @@ import (
 func main() {
 	config.Loadenv()
 	storage.Init()
+	services.Init()
 	database.ConnectDB()
 	routes.SetUpRoutes()
 }
