@@ -141,7 +141,10 @@ func GetStreamHistoryByID(streamHistoryID string) (*dtos.StreamHistoryResponse, 
 		MessageResponse:       messages,
 		TotalView:             int(totalViews),
 		Title:                 streamHistory.Title,
-		CategoryName:          &streamHistory.Category.CategoryName,
+	}
+
+	if streamHistory.StreamCategoryID != nil && streamHistory.Category != nil {
+		resp.CategoryName = &streamHistory.Category.CategoryName
 	}
 
 	return resp, nil
