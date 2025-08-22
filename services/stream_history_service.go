@@ -74,6 +74,7 @@ func GetAllStreamHistoryByStreamerID(hostPrincipalID string) ([]dtos.StreamHisto
 				SenderID:  m.MessagePrincipalID,
 				Content:   m.Content,
 				CreatedAt: m.CreatedAt,
+				Username:  m.Username,
 			})
 		}
 
@@ -123,6 +124,7 @@ func GetStreamHistoryByID(streamHistoryID string) (*dtos.StreamHistoryResponse, 
 			SenderID:  m.MessagePrincipalID,
 			Content:   m.Content,
 			CreatedAt: m.CreatedAt,
+			Username:  m.Username,
 		})
 	}
 

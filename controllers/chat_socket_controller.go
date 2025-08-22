@@ -72,7 +72,7 @@ func handleChatMessage(streamID string, data interface{}) {
 func handleMessages() {
 	for {
 		msg := <-broadcast
-
+		log.Println("saving message", msg)
 		if err := services.SaveMessage(msg.StreamID, msg.UserID, msg.Username, msg.Content); err != nil {
 			log.Println("Error saving message: ", err)
 		}
