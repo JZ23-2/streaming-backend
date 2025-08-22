@@ -1,0 +1,13 @@
+services:
+  streaming_be:
+    build: .
+    image: streaming-be
+    container_name: streaming_be
+    ports:
+      - 6969:6969
+    networks:
+      - caddy_net
+
+networks:
+  caddy_net:
+    external: true

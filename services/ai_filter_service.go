@@ -8,16 +8,16 @@ import (
 	"os"
 )
 
-var AI_URL = os.Getenv("AI_URL")
+var AI_CHAT_URL = os.Getenv("AI_CHAT_URL")
 
 func Init() {
-	AI_URL = os.Getenv("AI_URL")
+	AI_CHAT_URL = os.Getenv("AI_CHAT_URL")
 }
 
 func ModerateMessage(text string) (string, error) {
 	reqBody, _ := json.Marshal(dtos.ModerationRequest{Text: text})
 
-	url := AI_URL + "/moderate"
+	url := AI_CHAT_URL + "/moderate"
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
