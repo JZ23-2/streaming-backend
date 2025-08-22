@@ -35,6 +35,8 @@ func CreateOrUpdateStreamInfo(c *gin.Context) {
 		return
 	}
 
+	services.UpdateActiveStreamInfo(dto.HostPrincipalID)
+
 	utils.SuccessResponse(c, http.StatusNoContent, "stream info saved successfully", nil)
 }
 

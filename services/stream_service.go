@@ -222,3 +222,20 @@ func GetStreamByID(streamID string) (*models.Stream, error) {
 
 	return &stream, nil
 }
+
+func UpdateActiveStreamInfo(streamerID string) error {
+	stream, err := GetActiveStreamByStreamerID(streamerID)
+
+	if err != nil {
+		return err
+	}
+
+	stream.StreamInfoID = &streamerID
+
+	if err := database.DB.Save(&stream).Error; err != nil {
+		return err
+	}
+
+	return nil
+
+}
